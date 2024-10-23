@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.competition.util;
+package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
-
-import org.firstinspires.ftc.teamcode.pedroPathing.util.CustomPIDFCoefficients;
 
 @Config
 public class RobotConstants {
@@ -146,13 +144,13 @@ public class RobotConstants {
     OUTTAKE_WRIST_SERVO_TO_DEGREES = 355.0,
 
     // conversion factor of degrees to servo position units for the intake arm
-    INTAKE_ARM_DEGREES_TO_SERVO = 1.0/270,
+    INTAKE_ARM_DEGREES_TO_SERVO = 1.0 / 270,
 
     // conversion factor of degrees to servo position units for the outtake arm
-    OUTTAKE_ARM_DEGREES_TO_SERVO = 1.0/355,
+    OUTTAKE_ARM_DEGREES_TO_SERVO = 1.0 / 355,
 
     // conversion factor of degrees to servo position units for the outtake wrist
-    OUTTAKE_WRIST_DEGREES_TO_SERVO = 1.0/355,
+    OUTTAKE_WRIST_DEGREES_TO_SERVO = 1.0 / 355,
 
 
     // open position of the outer scoring claw
@@ -221,13 +219,4 @@ public class RobotConstants {
 
     // the time it takes for the pixels to fall through the transfer
     TRANSFER_DROP_TIME = 200; // TODO: find this later
-
-    public static CustomPIDFCoefficients
-
-            // lift PIDF coefficients
-            liftPIDFCoefficients = new CustomPIDFCoefficients(
-            0.006,
-            0,
-            0.00027,
-            0);
 }
