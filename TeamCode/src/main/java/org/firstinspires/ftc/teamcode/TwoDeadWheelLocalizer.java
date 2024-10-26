@@ -21,10 +21,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.GoBilda.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.messages.TwoDeadWheelInputsMessage;
 
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
+    public final Encoder par, perp;
+
+    double oldTime = 0;
     public static class Params {
         public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
         public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
@@ -32,7 +37,6 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
     public static Params PARAMS = new Params();
 
-    public final Encoder par, perp;
     public final IMU imu;
 
     private int lastParPos, lastPerpPos;
@@ -49,7 +53,6 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par")));
         perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
-
         // TODO: reverse encoder directions if needed
         //   par.setDirection(DcMotorSimple.Direction.REVERSE);
 

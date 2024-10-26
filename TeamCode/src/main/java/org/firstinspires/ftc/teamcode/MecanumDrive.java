@@ -45,6 +45,8 @@ import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.GoBilda.SensorGoBildaPinpointExample;
+
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -52,7 +54,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public final class MecanumDrive {
+public class MecanumDrive {
+    public static Class<?> TwoDeadWheelLocalizer;
+
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -60,7 +64,7 @@ public final class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
 
         // drive model parameters
         public double inPerTick = 1;
@@ -123,7 +127,7 @@ public final class MecanumDrive {
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
     public class DriveLocalizer implements Localizer {
-        public final Encoder leftFront, leftBack, rightBack, rightFront;
+        public final Encoder frontLeftMotor, backLeftMotor,backRightMotor, frontRightMotor;
         public final IMU imu;
 
         private int lastLeftFrontPos, lastLeftBackPos, lastRightBackPos, lastRightFrontPos;
@@ -131,10 +135,10 @@ public final class MecanumDrive {
         private boolean initialized;
 
         public DriveLocalizer() {
-            leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
-            leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
-            rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
-            rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+            frontLeftMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
+            backLeftMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
+            backRightMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
+            frontRightMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
             imu = lazyImu.get();
 
@@ -144,10 +148,10 @@ public final class MecanumDrive {
 
         @Override
         public Twist2dDual<Time> update() {
-            PositionVelocityPair leftFrontPosVel = leftFront.getPositionAndVelocity();
-            PositionVelocityPair leftBackPosVel = leftBack.getPositionAndVelocity();
-            PositionVelocityPair rightBackPosVel = rightBack.getPositionAndVelocity();
-            PositionVelocityPair rightFrontPosVel = rightFront.getPositionAndVelocity();
+            PositionVelocityPair leftFrontPosVel = frontLeftMotor.getPositionAndVelocity();
+            PositionVelocityPair leftBackPosVel = backLeftMotor.getPositionAndVelocity();
+            PositionVelocityPair rightBackPosVel = backRightMotor.getPositionAndVelocity();
+            PositionVelocityPair rightFrontPosVel = frontRightMotor.getPositionAndVelocity();
 
             YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
 

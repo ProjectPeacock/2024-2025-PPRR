@@ -20,7 +20,7 @@
  *   SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode.competition.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
-import org.firstinspires.ftc.teamcode.competition.hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 
 /*
  * This is (mostly) the OpMode used in the goBILDA Robot in 3 Days for the 24-25 Into The Deep FTC Season.
@@ -74,6 +74,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
     double armLiftComp = 0;
 
+
     /* Variables that are used to set the arm to a specific position */
     double armPosition = (int)robot.ARM_COLLAPSED_INTO_ROBOT;
     double armPositionFudgeFactor;
@@ -103,6 +104,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         telemetry.addData("Status:", "Initialized");
         telemetry.update();
 
+        robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
         telemetry.update();
@@ -111,6 +116,8 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
         /* Run until the driver presses stop */
         while (opModeIsActive())
+
+
 
         {  double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
@@ -144,6 +151,9 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.leftBackDrive.setPower(backLeftPower);
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
+            robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.

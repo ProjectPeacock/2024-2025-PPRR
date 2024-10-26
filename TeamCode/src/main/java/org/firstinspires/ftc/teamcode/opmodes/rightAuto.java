@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode.competition.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.teamcode.competition.hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.competition.libraries.RobotLibrary;
 
 @Autonomous(name = "rightAuto", group = "Robot")

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.competition.hardware;
+package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -26,6 +26,9 @@ public class HWProfile {
     public DcMotor  hangMotor        = null;
     public CRServo  intake           = null; //the active intake servo
     public Servo    wrist            = null; //the wrist servo
+    public Servo    intakeRotate1  = null;
+    public Servo    intakeRotate2 = null;
+
 
 
 
@@ -59,14 +62,14 @@ public class HWProfile {
 
     public final double ARM_COLLAPSED_INTO_ROBOT  = 0;
     public final double ARM_COLLECT               = 0 * ARM_TICKS_PER_DEGREE;
-    public final int ARM_CLEAR_BARRIER         = 150;
+    public final int ARM_CLEAR_BARRIER         = 20;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
     public final int ARM_SCORE_SPECIMEN        = 300;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
-    public final double ARM_SCORE_SAMPLE_IN_LOW   = 90 * ARM_TICKS_PER_DEGREE;
-    public final double ARM_ATTACH_HANGING_HOOK   = 110 * ARM_TICKS_PER_DEGREE;
-    public final double ARM_WINCH_ROBOT           = 10  * ARM_TICKS_PER_DEGREE;
-    public final int ARM_HIGH_SCORE           = 700;
+    public final double ARM_SCORE_SAMPLE_IN_LOW   = 100 * ARM_TICKS_PER_DEGREE;
+    public final double ARM_ATTACH_HANGING_HOOK   = 150 * ARM_TICKS_PER_DEGREE;
+    public final double ARM_WINCH_ROBOT           = 0  * ARM_TICKS_PER_DEGREE;
+    public final int ARM_HIGH_SCORE           = 600;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     public final double INTAKE_COLLECT    = -1.0;
@@ -102,7 +105,6 @@ public class HWProfile {
         liftMotor       = hwmap.dcMotor.get("liftMotor");
         //armMotor        = hwmap.get(DcMotor.class, "left_arm"); //the arm motor
         hangMotor       = hwmap.dcMotor.get("hangMotor");
-
 
        /*
        we need to reverse the left side of the drivetrain so it doesn't turn when we ask all the
@@ -152,6 +154,8 @@ public class HWProfile {
         /* Make sure that the intake is off, and the wrist is folded in. */
         intake.setPower(INTAKE_OFF);
         wrist.setPosition(WRIST_FOLDED_OUT);
+        //intakeRotate1.setPosition(0.78);
+        //intakeRotate2.setPosition(.22);
 
     }
 }

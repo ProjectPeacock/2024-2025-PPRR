@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.competition.hardware.HWProfile;
+import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 
 public class RobotLibrary {
 
