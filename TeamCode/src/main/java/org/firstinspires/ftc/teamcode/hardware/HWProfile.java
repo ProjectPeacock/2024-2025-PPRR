@@ -24,10 +24,11 @@ public class HWProfile {
    // public DcMotor  armMotor         = null; //the arm motor
     public DcMotor  liftMotor        = null; //
     public DcMotor  hangMotor        = null;
-    public CRServo  intake           = null; //the active intake servo
+    //public CRServo  intake           = null; //the active intake servo
     public Servo    wrist            = null; //the wrist servo
     public Servo    intakeRotate1  = null;
     public Servo    intakeRotate2 = null;
+    public Servo    claw = null;
 
 
 
@@ -60,9 +61,9 @@ public class HWProfile {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    public final double ARM_COLLAPSED_INTO_ROBOT  = 0;
+    public final double ARM_COLLAPSED_INTO_ROBOT  = 100;
     public final double ARM_COLLECT               = 0 * ARM_TICKS_PER_DEGREE;
-    public final int ARM_CLEAR_BARRIER         = 20;
+    public final int ARM_CLEAR_BARRIER         = 275;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
     public final int ARM_SCORE_SPECIMEN        = 300;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
@@ -70,6 +71,7 @@ public class HWProfile {
     public final double ARM_ATTACH_HANGING_HOOK   = 150 * ARM_TICKS_PER_DEGREE;
     public final double ARM_WINCH_ROBOT           = 0  * ARM_TICKS_PER_DEGREE;
     public final int ARM_HIGH_SCORE           = 600;
+    public final double ARM_EXTENSION_ANGLE = 400;
 
     /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
     public final double INTAKE_COLLECT    = -1.0;
@@ -82,6 +84,10 @@ public class HWProfile {
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+
+    public final double CLAW_OPEN = 0;
+    public final double CLAW_CLOSED = .6;
+
 
 
 
@@ -148,14 +154,15 @@ public class HWProfile {
         //liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         /* Define and initialize servos.*/
-        intake = hwmap.get(CRServo.class, "intake");
+        //intake = hwmap.get(CRServo.class, "intake");
         wrist  = hwmap.get(Servo.class, "wrist");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
-        intake.setPower(INTAKE_OFF);
+       // intake.setPower(INTAKE_OFF);
         wrist.setPosition(WRIST_FOLDED_OUT);
         //intakeRotate1.setPosition(0.78);
         //intakeRotate2.setPosition(.22);
+        claw = hwmap.get(Servo.class, "claw");
 
     }
 }

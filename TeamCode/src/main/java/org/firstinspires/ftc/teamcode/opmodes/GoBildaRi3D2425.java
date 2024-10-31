@@ -153,7 +153,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.rightBackDrive.setPower(backRightPower);
             robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        
+
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
@@ -171,13 +171,13 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             one cycle. Which can cause strange behavior. */
 
             if (gamepad1.left_bumper) {
-                robot.intake.setPower(robot.INTAKE_COLLECT);
-            }
-            else if (gamepad1.right_bumper) {
-                robot.intake.setPower(robot.INTAKE_OFF);
-            }
-            else if (gamepad1.y) {
-                robot.intake.setPower(robot.INTAKE_DEPOSIT);
+                robot.claw.setPosition(robot.CLAW_OPEN);
+//                robot.intakeRotate1.setPosition(.5);
+//                robot.intakeRotate2.setPosition(.5);
+                //} else if (gamepad1.right_stick_button) {
+                // robot.intake.setPower(robot.INTAKE_OFF);
+            } else if (gamepad1.right_bumper) {
+                robot.claw.setPosition(robot.CLAW_CLOSED);
             }
 
 
@@ -204,7 +204,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 armPosition = robot.ARM_HIGH_SCORE;
                 liftPosition = robot.LIFT_COLLAPSED;
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                robot.intake.setPower(robot.INTAKE_COLLECT);
+                //robot.intake.setPower(robot.INTAKE_COLLECT);
 
             }
 
@@ -227,7 +227,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                     back to folded inside the robot. This is also the starting configuration */
                 armPosition = robot.ARM_COLLAPSED_INTO_ROBOT;
                 //liftPosition = LIFT_COLLAPSED;
-                robot.intake.setPower(robot.INTAKE_OFF);
+                //.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
             }
 
@@ -240,14 +240,18 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             else if (gamepad2.dpad_up){
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = robot.ARM_ATTACH_HANGING_HOOK;
-                robot.intake.setPower(robot.INTAKE_OFF);
+                //robot.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+            }
+
+            else if (gamepad1.y){
+                armPosition = robot.ARM_EXTENSION_ANGLE;
             }
 
             else if (gamepad2.dpad_down){
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = robot.ARM_WINCH_ROBOT;
-                robot.intake.setPower(robot.INTAKE_OFF);
+                //robot.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
             }
 
