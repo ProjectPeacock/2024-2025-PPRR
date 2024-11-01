@@ -45,8 +45,6 @@ import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
-import org.firstinspires.ftc.teamcode.GoBilda.SensorGoBildaPinpointExample;
-
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -54,9 +52,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Config
-public class MecanumDrive {
-    public static Class<?> TwoDeadWheelLocalizer;
-
+public final class MecanumDrive {
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -64,7 +60,7 @@ public class MecanumDrive {
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.UP;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // drive model parameters
         public double inPerTick = 1;
@@ -127,7 +123,7 @@ public class MecanumDrive {
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
     public class DriveLocalizer implements Localizer {
-        public final Encoder frontLeftMotor, backLeftMotor,backRightMotor, frontRightMotor;
+        public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
 
         private int lastLeftFrontPos, lastLeftBackPos, lastRightBackPos, lastRightFrontPos;
@@ -135,10 +131,10 @@ public class MecanumDrive {
         private boolean initialized;
 
         public DriveLocalizer() {
-            frontLeftMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
-            backLeftMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
-            backRightMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
-            frontRightMotor = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
+            leftFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftFront));
+            leftBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.leftBack));
+            rightBack = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightBack));
+            rightFront = new OverflowEncoder(new RawEncoder(MecanumDrive.this.rightFront));
 
             imu = lazyImu.get();
 
@@ -148,10 +144,10 @@ public class MecanumDrive {
 
         @Override
         public Twist2dDual<Time> update() {
-            PositionVelocityPair leftFrontPosVel = frontLeftMotor.getPositionAndVelocity();
-            PositionVelocityPair leftBackPosVel = backLeftMotor.getPositionAndVelocity();
-            PositionVelocityPair rightBackPosVel = backRightMotor.getPositionAndVelocity();
-            PositionVelocityPair rightFrontPosVel = frontRightMotor.getPositionAndVelocity();
+            PositionVelocityPair leftFrontPosVel = leftFront.getPositionAndVelocity();
+            PositionVelocityPair leftBackPosVel = leftBack.getPositionAndVelocity();
+            PositionVelocityPair rightBackPosVel = rightBack.getPositionAndVelocity();
+            PositionVelocityPair rightFrontPosVel = rightFront.getPositionAndVelocity();
 
             YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
 
@@ -221,10 +217,10 @@ public class MecanumDrive {
 
         // TODO: make sure your config has motors with these names (or change them)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        leftFront = hardwareMap.get(DcMotorEx.class, "frontLeftMotor");
-        leftBack = hardwareMap.get(DcMotorEx.class, "backLeftMotor");
-        rightBack = hardwareMap.get(DcMotorEx.class, "backRightMotor");
-        rightFront = hardwareMap.get(DcMotorEx.class, "frontRightMotor");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -232,8 +228,7 @@ public class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
-           leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-           leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html

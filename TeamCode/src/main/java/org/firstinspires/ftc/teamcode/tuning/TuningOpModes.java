@@ -33,7 +33,8 @@ import java.util.List;
 
 public final class TuningOpModes {
     // TODO: change this to TankDrive.class if you're using tank
-    public static final Class<?> DRIVE_CLASS = MecanumDrive.TwoDeadWheelLocalizer;
+    public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
+
     public static final String GROUP = "quickstart";
     public static final boolean DISABLED = false;
 
@@ -60,10 +61,10 @@ public final class TuningOpModes {
                 List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
                 if (md.localizer instanceof MecanumDrive.DriveLocalizer) {
                     MecanumDrive.DriveLocalizer dl = (MecanumDrive.DriveLocalizer) md.localizer;
-                    leftEncs.add(dl.frontLeftMotor);
-                    leftEncs.add(dl.backLeftMotor);
-                    rightEncs.add(dl.frontRightMotor);
-                    rightEncs.add(dl.backRightMotor);
+                    leftEncs.add(dl.leftFront);
+                    leftEncs.add(dl.leftBack);
+                    rightEncs.add(dl.rightFront);
+                    rightEncs.add(dl.rightBack);
                 } else if (md.localizer instanceof ThreeDeadWheelLocalizer) {
                     ThreeDeadWheelLocalizer dl = (ThreeDeadWheelLocalizer) md.localizer;
                     parEncs.add(dl.par0);
