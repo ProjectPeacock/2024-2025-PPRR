@@ -92,8 +92,6 @@ public class RRAutoBase extends LinearOpMode{
         //Key Pay inputs to selecting Starting Position of robot
         selectStartingPosition();
 
-        setStartingDelay();
-
         // Wait for the DS start button to be touched.
         telemetry.addData("Selected Starting Position", startPosition);
         telemetry.addData("Selected Delay Position", delayPosition);
@@ -136,6 +134,7 @@ public class RRAutoBase extends LinearOpMode{
         Pose2d yellowSample2Position = new Pose2d(0, 0, 0);
         Pose2d yellowSample3Position = new Pose2d(0, 0, 0);
         Pose2d midwayPose1 = new Pose2d(0, 0, 0);
+        Pose2d midwayPose2 = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0, 0, 0);
         double waitSecondsBeforeDrop = 0;
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
@@ -143,33 +142,32 @@ public class RRAutoBase extends LinearOpMode{
         switch (startPosition) {
             case BLUE_SAMPLES:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                sampleScoringPosition = new Pose2d(18, 25, Math.toRadians(-90));
-                yellowSample1Position = new Pose2d(30, -78, Math.toRadians(-90));
-                yellowSample2Position = new Pose2d(40, -75, Math.toRadians(-45));
-                yellowSample3Position = new Pose2d(4, -65, Math.toRadians(-90));
-                midwayPose1 = new Pose2d(8, -65, Math.toRadians(-90));
-                waitSecondsBeforeDrop = 0; //TODO: Adjust time to wait for alliance partner to move from board
+                sampleScoringPosition = new Pose2d(6, -20, Math.toRadians(-135));
+                yellowSample1Position = new Pose2d(30, 0, Math.toRadians(-90));
+                yellowSample2Position = new Pose2d(30, -5, Math.toRadians(-90));
+                yellowSample3Position = new Pose2d(30, -10, Math.toRadians(-90));
+                parkPose = new Pose2d(40, 0, 90);
                 break;
 
             case RED_SAMPLES:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                sampleScoringPosition = new Pose2d(18, 25, Math.toRadians(-90));
-                yellowSample1Position = new Pose2d(30, -78, Math.toRadians(-90));
-                yellowSample2Position = new Pose2d(40, -75, Math.toRadians(-45));
-                yellowSample3Position = new Pose2d(4, -65, Math.toRadians(-90));
-                midwayPose1 = new Pose2d(8, -65, Math.toRadians(-90));
-                waitSecondsBeforeDrop = 0; //TODO: Adjust time to wait for alliance partner to move from board
+                sampleScoringPosition = new Pose2d(6, -20, Math.toRadians(-135));
+                yellowSample1Position = new Pose2d(30, 0, Math.toRadians(-90));
+                yellowSample2Position = new Pose2d(30, -5, Math.toRadians(-90));
+                yellowSample3Position = new Pose2d(30, -10, Math.toRadians(-90));
+                parkPose = new Pose2d(40, 0, 90);
                 break;
 
             case BLUE_SPECIMENS:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                grabSpecimenPosition = new Pose2d(7, 57, Math.toRadians(-90));
-                specimenScoringPosition = new Pose2d(0, 0, 0);
-                sampleScoringPosition = new Pose2d(0, 0, 0);
-                grabSpecimenPosition = new Pose2d(0, 0, 0);
-                midwayPose1 = new Pose2d(0, 0, 0);
-                parkPose = new Pose2d(0, 0, 0);
-                waitSecondsBeforeDrop = 0; //TODO: Adjust time to wait for alliance partner to move from board
+                specimenScoringPosition = new Pose2d(15, 0, 0);
+                grabSpecimenPosition = new Pose2d(3, 30, Math.toRadians(90));
+                coloredSample1Position = new Pose2d(0, 0, 0);
+                coloredSample2Position = new Pose2d(0, 0, 0);
+                coloredSample3Position = new Pose2d(0, 0, 0);
+                midwayPose1 = new Pose2d(10, 20, 90);
+                midwayPose2 = new Pose2d(30, 30, 90);
+                parkPose = new Pose2d(3, 15, 0);
                 break;
 
             case RED_SPECIMENS:
@@ -185,148 +183,267 @@ public class RRAutoBase extends LinearOpMode{
                 break;
         }
 
-        //Move robot to dropPurplePixel based on identified Spike Mark Location
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(specimenScoringPosition.position, specimenScoringPosition.heading)
-                        .strafeToLinearHeading(coloredSample1Position.position, coloredSample1Position.heading)
-                        .build());
-
-        //TODO : Code to drop Purple Pixel on Spike Mark
-        if (delayPosition == 2) safeWaitSeconds(startDelay);
-
-        //Move robot to grabSpecimenPosition
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
-                        .build());
-
-        if (delayPosition == 3) safeWaitSeconds(startDelay);
-
-        //For Blue Right and Red Left, intake pixel from stack
+        /**
+         * For Sample Scoring into high bucket
+         **/
         if (startPosition == START_POSITION.BLUE_SAMPLES ||
                 startPosition == START_POSITION.RED_SAMPLES) {
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to high bucket
+            }
+
+            // Drive to scoring position
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
-                            .strafeToLinearHeading(coloredSample2Position.position, coloredSample2Position.heading)
                             .build());
 
+            // Release the sample into the bucket
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to release the sample and lower the arm
+            }
 
+            // Drive to Sample1 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(yellowSample1Position.position, yellowSample1Position.heading)
+                            .build());
+            // Pick up Sample1
+            if(opModeIsActive()) {
+                // TODO: Add code to grab a sample from the floor
+            }
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to high bucket
+            }
+
+            // Drive to scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
+                            .build());
+
+            // Release the sample into the bucket
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to release the sample and lower the arm
+            }
+
+            // Drive to Sample2 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(yellowSample2Position.position, yellowSample2Position.heading)
+                            .build());
+            // Pick up Sample2
+            if(opModeIsActive()) {
+                // TODO: Add code to grab a sample from the floor
+            }
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to high bucket
+            }
+
+            // Drive to scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
+                            .build());
+
+            // Release the sample into the bucket
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to release the sample and lower the arm
+            }
+
+            // Drive to Sample3 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(yellowSample3Position.position, yellowSample3Position.heading)
+                            .build());
+            // Pick up Sample3
+            if(opModeIsActive()) {
+                // TODO: Add code to grab a sample from the floor
+            }
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to high bucket
+            }
+
+            // Drive to scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
+                            .build());
+
+            // Release the sample into the bucket
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to release the sample and lower the arm
+            }
+
+            // Park
+            if(opModeIsActive()) {
+                // TODO: Add code to park
+            }
+
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(parkPose.position, parkPose.heading)
+                            .build());
+
+        }   //end of if (startPosition == BLUE_SAMPLES || RED_SAMPLES)
+
+        /**
+         *  For Specimen Scoring onto high bar
+         **/
+        if (startPosition == START_POSITION.BLUE_SPECIMENS ||
+                startPosition == START_POSITION.RED_SPECIMENS) {
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()){
+                // TODO: Add code to raise claw to high bucket
+            }
+
+            // Drive to scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(specimenScoringPosition.position, specimenScoringPosition.heading)
+                            .build());
+
+            // Release the sample into the bucket
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to release the sample and lower the arm
+            }
+
+            // Drive to color sample1 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(coloredSample1Position.position, coloredSample1Position.heading)
+                            .build());
+
+            // Push Color Sample1 into the Observation area
+            // Drive to color sample1 Position
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
                             .build());
-        }
 
-        //Move robot to yellowSample3Position and to dropYellowPixelPose
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .setReversed(true)
-//                        .splineToLinearHeading(dropYellowPixelPose, 0)
-                        .build());
+            // Grab the specimen
+            if(opModeIsActive()) {
+                // TODO: Add code to grab the specimen from the observation area (from the floor)
+            }
 
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
-                        .strafeToLinearHeading(yellowSample3Position.position, yellowSample3Position.heading)
-                        .build());
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to specimen high bar
+            }
 
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(yellowSample2Position.position, yellowSample2Position.heading)
-                        .strafeToLinearHeading(coloredSample2Position.position, coloredSample2Position.heading)
-                        .strafeToLinearHeading(coloredSample3Position.position, coloredSample3Position.heading)
-                        .strafeToLinearHeading(yellowSample1Position.position, yellowSample1Position.heading)
-                        .build());
+            // Drive to specimen scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(specimenScoringPosition.position, specimenScoringPosition.heading)
+                            .build());
 
-        //Move robot to yellowSample3Position and to dropYellowPixelPose
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
-                        .strafeToLinearHeading(sampleScoringPosition.position, sampleScoringPosition.heading)
-                        .build());
+            // Score the specimen on the high bar
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to score the specimen
+            }
 
-        safeWaitSeconds(waitSecondsBeforeDrop);
+            // Drive to Color Sample2 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(coloredSample2Position.position, coloredSample2Position.heading)
+                            .build());
 
-        //Move robot to yellowSample3Position and to dropYellowPixelPose
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
-                        .setReversed(true)
-//                        .splineToLinearHeading(dropWhitePixelPose, 0)
-                        .build());
+            // Push Color Sample1 into the Observation area
+            // Drive to color sample1 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
+                            .build());
 
-        //Move robot to park in Backstage
-        Actions.runBlocking(
-                drive.actionBuilder(drive.pose)
-                        .strafeToLinearHeading(parkPose.position, parkPose.heading)
-                        //.splineToLinearHeading(parkPose,0)
-                        .build());
+            // Grab the specimen
+            if(opModeIsActive()) {
+                // TODO: Add code to grab the specimen from the observation area (from the floor)
+            }
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to specimen high bar
+            }
+
+            // Drive to specimen scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(specimenScoringPosition.position, specimenScoringPosition.heading)
+                            .build());
+
+            // Score the specimen on the high bar
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to score the specimen
+            }
+
+            // Drive to colored Sample3 Position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(coloredSample3Position.position, coloredSample3Position.heading)
+                            .build());
+
+            // Push Color Sample3 into the Observation area
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
+                            .build());
+
+            // Grab the specimen
+            if(opModeIsActive()) {
+                // TODO: Add code to grab the specimen from the observation area (from the floor)
+            }
+
+            // Raise Arm to high bucket scoring position
+            if(opModeIsActive()) {
+                // TODO: Add code to raise claw to specimen high bar
+            }
+
+            // Drive to specimen scoring position
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(specimenScoringPosition.position, specimenScoringPosition.heading)
+                            .build());
+
+            // Score the specimen on the high bar
+            // Lower the arm
+            if(opModeIsActive()) {
+                // TODO: Add code to score the specimen
+            }
+
+            // Park
+            if(opModeIsActive()) {
+                // TODO: Add code to park
+                // set claw and motors into correct position
+            }
+
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(parkPose.position, parkPose.heading)
+                            .build());
+
+        }   //end of if (startPosition == BLUE_SPECIMENS || RED_SPECIMENS)
+
     }
+
     /**
      *
      */
-    public void setStartingDelay(){
-        double delay = 0;
-        boolean exit = false;
-        ElapsedTime bPressed = new ElapsedTime();
-
-        bPressed.reset();
-        while(!exit){
-            telemetry.addData("Delay Position = ", delayPosition);
-            telemetry.addData("Current Delay = ", delay);
-            telemetry.addData("to increase delay =>", "DPAD_UP");
-            telemetry.addData("to decrease delay =>", "DPAD_DOWN");
-            telemetry.addData("to delay in start position =>", "Y/Δ");
-            telemetry.addData("to cancel the delay =>", "B/O");
-            telemetry.addData("to delay at purple pixel =>", "A/X");
-            telemetry.addData("to delay at backdrop approach =>", "X/▢");
-            telemetry.addData("to exit =>", "right_bumper");
-            telemetry.update();
-
-            if(gamepad1.dpad_up && bPressed.time() > 0.3){
-                delay = delay + 0.5;
-                bPressed.reset();
-            }
-
-            if(gamepad1.dpad_down && bPressed.time() > 0.3){
-                delay = delay - 0.5;
-                bPressed.reset();
-            }
-
-            if(delay < 0) {
-                delay = 0;
-            } else if(delay > 15) {
-                delay = 15;
-            }
-
-
-            if(gamepad1.b && bPressed.time() > 0.3) {
-                bPressed.reset();
-                delayPosition=0;
-            }
-
-            if(gamepad1.y && bPressed.time() > 0.3) {
-                bPressed.reset();
-                delayPosition=1;
-            }
-
-            if(gamepad1.a && bPressed.time() > 0.3) {
-                bPressed.reset();
-                delayPosition=2;
-            }
-
-            if(gamepad1.x && bPressed.time() > 0.3) {
-                bPressed.reset();
-                delayPosition=3;
-            }
-
-            if(gamepad1.right_bumper) exit = true;
-        }
-        startDelay=delay;
-    }
-
 
     //Method to select starting position using X, Y, A, B buttons on gamepad
     public void selectStartingPosition() {
@@ -342,47 +459,29 @@ public class RRAutoBase extends LinearOpMode{
                     telemetry.addData("Initializing Autonomous:",
                             TEAM_NAME, " ", TEAM_NUMBER);
                     telemetry.addData("---------------------------------------","");
-                    telemetry.addLine("This Auto program uses Open CV Vision Processor for Team Element detection");
                     telemetry.addData("Select Starting Position using XYAB on Logitech (or ▢ΔOX on Playstayion) on gamepad 1:","");
-                    telemetry.addData("    Blue Left   ", "(X / ▢)");
-                    telemetry.addData("    Blue Middle ", "(DPAD_LEFT)");
-                    telemetry.addData("    Blue Right ", "(Y / Δ)");
-                    telemetry.addData("    Red Left    ", "(B / O)");
-                    telemetry.addData("    Red Middle    ", "(DPAD_RIGHT)");
-                    telemetry.addData("    Red Right  ", "(A / X)");
+                    telemetry.addData("    Blue Yellow Samples   ", "(X / ▢)");
+                    telemetry.addData("    Blue Specimens ", "(Y / Δ)");
+                    telemetry.addData("    Red Yellow Samples    ", "(B / O)");
+                    telemetry.addData("    Red Specimens  ", "(A / X)");
                     if(gamepad1.x){
                         startPosition = START_POSITION.BLUE_SAMPLES;
-                        setupConfig = State.PARK_POSITION;
+                        menuActive = false;
                     }
                     if(gamepad1.dpad_left){
                         startPosition = START_POSITION.BLUE_SPECIMENS;
-                        setupConfig = State.PARK_POSITION;
+                        menuActive = false;
                     }
                     if(gamepad1.b){
                         startPosition = START_POSITION.RED_SAMPLES;
-                        setupConfig = State.PARK_POSITION;
+                        menuActive = false;
                     }
                     if(gamepad1.dpad_right){
                         startPosition = START_POSITION.RED_SPECIMENS;
-                        setupConfig = State.PARK_POSITION;
+                        menuActive = false;
                     }
                     telemetry.update();
                     break;
-                case PARK_POSITION:
-                    telemetry.addData("Select PARK Position using DPAD_UP & DPAD_DOWN on gamepad 1:","");
-                    telemetry.addData("    Park by WALL   ", "DPAD_DOWN");
-                    telemetry.addData("    Park on Field Side ", "DPAD_UP");
-
-                    if(gamepad1.dpad_down){
-                        menuActive = false;
-                        break;
-                    }
-                    if(gamepad1.dpad_up){
-                        menuActive = false;
-                        break;
-                    }
-                    break;
-
             }
             telemetry.update();
         }
