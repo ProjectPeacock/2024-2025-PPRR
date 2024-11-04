@@ -25,12 +25,9 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -100,11 +97,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, true);
         telemetry.addData("Status:", "Initialized");
         telemetry.update();
 
-        robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
@@ -152,7 +149,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
             robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
 
@@ -335,10 +332,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             }
 
             robot.hangMotor.setTargetPosition((int) armPosition);
-            robot.liftMotor.setTargetPosition((int) liftPosition);
+            robot.extendMotor.setTargetPosition((int) liftPosition);
 
             robot.hangMotor.setPower(1);
-            robot.liftMotor.setPower(1);
+            robot.extendMotor.setPower(1);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
@@ -377,9 +374,9 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
             telemetry.addData("lift variable", liftPosition);
-            telemetry.addData("Lift Target Position",robot.liftMotor.getTargetPosition());
-            telemetry.addData("lift current position", robot.liftMotor.getCurrentPosition());
-            telemetry.addData("liftMotor Current:",((DcMotorEx) robot.liftMotor).getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
+            telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
+            telemetry.addData("liftMotor Current:",((DcMotorEx) robot.extendMotor).getCurrent(CurrentUnit.AMPS));
             telemetry.update();
 
         }

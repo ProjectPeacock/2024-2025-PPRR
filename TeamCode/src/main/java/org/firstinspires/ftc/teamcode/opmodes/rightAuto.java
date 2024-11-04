@@ -31,7 +31,7 @@ public class rightAuto extends LinearOpMode {
         // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
 
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, true);
 
         telemetry.addData("Status: ", "Initializing...");
         telemetry.update();

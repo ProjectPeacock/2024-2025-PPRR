@@ -1,18 +1,9 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class HWProfile {
 
@@ -22,16 +13,13 @@ public class HWProfile {
     public DcMotor  leftBackDrive    = null;
     public DcMotor  rightBackDrive   = null;
    // public DcMotor  armMotor         = null; //the arm motor
-    public DcMotor  liftMotor        = null; //
+    public DcMotor extendMotor = null; //
     public DcMotor  hangMotor        = null;
     //public CRServo  intake           = null; //the active intake servo
     public Servo    wrist            = null; //the wrist servo
     public Servo    intakeRotate1  = null;
     public Servo    intakeRotate2 = null;
     public Servo    claw = null;
-
-
-
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -88,81 +76,83 @@ public class HWProfile {
     public final double CLAW_OPEN = 0;
     public final double CLAW_CLOSED = .6;
 
-
-
-
     public final double LIFT_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
 
     public final double LIFT_COLLAPSED = 0 * LIFT_TICKS_PER_MM;
     public final double LIFT_SCORING_IN_LOW_BASKET = 0 * LIFT_TICKS_PER_MM;
     public final double LIFT_SCORING_IN_HIGH_BASKET = 480 * LIFT_TICKS_PER_MM;
 
+    public Boolean opModeTeleop = null;
+
+    /* local OpMode members. */
+    HardwareMap hwMap =  null;
+
+
     public HWProfile() {
 
     }
 
-    public void init(HardwareMap hwmap) {
+    public void init(HardwareMap ahwMap, boolean teleOp) {
+        // Save reference to Hardware map
+        hwMap = ahwMap;
+        this.opModeTeleop = teleOp;
 
-        /* Define and Initialize Motors */
-        leftFrontDrive  = hwmap.dcMotor.get("frontLeftMotor");
-        leftBackDrive   = hwmap.dcMotor.get("backLeftMotor");
-        rightFrontDrive = hwmap.dcMotor.get("frontRightMotor");
-        rightBackDrive  = hwmap.dcMotor.get("backRightMotor");
-        liftMotor       = hwmap.dcMotor.get("liftMotor");
-        //armMotor        = hwmap.get(DcMotor.class, "left_arm"); //the arm motor
-        hangMotor       = hwmap.dcMotor.get("hangMotor");
+        if(opModeTeleop){
+            /* Define and Initialize Motors */
+            leftFrontDrive  = hwMap.dcMotor.get("frontLeftMotor");
+            leftBackDrive   = hwMap.dcMotor.get("backLeftMotor");
+            rightFrontDrive = hwMap.dcMotor.get("frontRightMotor");
+            rightBackDrive  = hwMap.dcMotor.get("backRightMotor");
 
-       /*
-       we need to reverse the left side of the drivetrain so it doesn't turn when we ask all the
-       drive motors to go forward.
-        */
+           /*
+           we need to reverse the left side of the drivetrain so it doesn't turn when we ask all the
+           drive motors to go forward.
+            */
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
-        much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
-        stops much quicker. */
-        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hangMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hangMotor.setTargetPosition(0);
-        hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            /* Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to slow down
+            much faster when it is coasting. This creates a much more controllable drivetrain. As the robot
+            stops much quicker. */
+            leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
 
         /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
-        //((DcMotorEx) armMotor).setCurrentAlert(5,CurrentUnit.AMPS);
 
+        extendMotor = hwMap.dcMotor.get("liftMotor");
+        hangMotor       = hwMap.dcMotor.get("hangMotor");
 
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
         If you do not have the encoder plugged into this motor, it will not run in this code. */
-        //armMotor.setTargetPosition(0);
-        //armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftMotor.setTargetPosition(0);
-        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        extendMotor.setTargetPosition(0);
+        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        hangMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangMotor.setTargetPosition(0);
+        hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         /* Define and initialize servos.*/
-        //intake = hwmap.get(CRServo.class, "intake");
-        wrist  = hwmap.get(Servo.class, "wrist");
+        wrist  = hwMap.get(Servo.class, "wrist");
 
         /* Make sure that the intake is off, and the wrist is folded in. */
-       // intake.setPower(INTAKE_OFF);
-        wrist.setPosition(WRIST_FOLDED_OUT);
-        //intakeRotate1.setPosition(0.78);
-        //intakeRotate2.setPosition(.22);
-        claw = hwmap.get(Servo.class, "claw");
+        claw = hwMap.get(Servo.class, "claw");
 
     }
 }
