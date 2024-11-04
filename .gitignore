@@ -80,4 +80,5 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-RoadRunner/src/main/assets
+.DS_Store
+/.idea
