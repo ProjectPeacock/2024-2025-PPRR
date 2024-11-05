@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class HWProfile {
@@ -12,14 +14,13 @@ public class HWProfile {
     public DcMotor  rightFrontDrive  = null; //the right drivetrain motor
     public DcMotor  leftBackDrive    = null;
     public DcMotor  rightBackDrive   = null;
-   // public DcMotor  armMotor         = null; //the arm motor
-    public DcMotor extendMotor = null; //
+    public DcMotor  extendMotor      = null; //
     public DcMotor  hangMotor        = null;
-    //public CRServo  intake           = null; //the active intake servo
     public Servo    wrist            = null; //the wrist servo
-    public Servo    intakeRotate1  = null;
-    public Servo    intakeRotate2 = null;
-    public Servo    claw = null;
+    public Servo    intakeRotate1    = null;
+    public Servo    intakeRotate2    = null;
+    public Servo    claw             = null;
+    public IMU      imu              = null;
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -51,20 +52,15 @@ public class HWProfile {
 
     public final double ARM_COLLAPSED_INTO_ROBOT  = 100;
     public final double ARM_COLLECT               = 0 * ARM_TICKS_PER_DEGREE;
-    public final int ARM_CLEAR_BARRIER         = 275;
+    public final int    ARM_CLEAR_BARRIER         = 275;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
-    public final int ARM_SCORE_SPECIMEN        = 300;
+    public final int    ARM_SCORE_SPECIMEN        = 300;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
     public final double ARM_SCORE_SAMPLE_IN_LOW   = 100 * ARM_TICKS_PER_DEGREE;
     public final double ARM_ATTACH_HANGING_HOOK   = 150 * ARM_TICKS_PER_DEGREE;
     public final double ARM_WINCH_ROBOT           = 0  * ARM_TICKS_PER_DEGREE;
-    public final int ARM_HIGH_SCORE           = 600;
-    public final double ARM_EXTENSION_ANGLE = 400;
-
-    /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-    public final double INTAKE_COLLECT    = -1.0;
-    public final double INTAKE_OFF        =  0.0;
-    public final double INTAKE_DEPOSIT    =  0.5;
+    public final int    ARM_HIGH_SCORE            = 600;
+    public final double ARM_EXTENSION_ANGLE       = 400;
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public final double WRIST_FOLDED_IN   = 0.1667;
@@ -124,6 +120,17 @@ public class HWProfile {
             rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+            // Retrieve the IMU from the hardware map
+            imu = hwMap.get(IMU.class, "imu");
+            // Adjust the orientation parameters to match your robot
+            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                    RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+            // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+            imu.initialize(parameters);
+
         }
 
 

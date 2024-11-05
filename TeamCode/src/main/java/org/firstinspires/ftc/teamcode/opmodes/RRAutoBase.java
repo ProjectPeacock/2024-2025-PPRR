@@ -31,32 +31,17 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import static com.qualcomm.robotcore.util.ElapsedTime.Resolution.SECONDS;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.hardware.CSAutoParams;
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.libraries.IntakeControlThread;
 import org.firstinspires.ftc.teamcode.libraries.RRMechOps;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.VisionProcessor;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 
 @Disabled
 @Autonomous(name = "Auto Samples", group = "Competition", preselectTeleOp = "TeleOp")
@@ -168,17 +153,19 @@ public class RRAutoBase extends LinearOpMode{
                 midwayPose1 = new Pose2d(10, 20, 90);
                 midwayPose2 = new Pose2d(30, 30, 90);
                 parkPose = new Pose2d(3, 15, 0);
+
                 break;
 
             case RED_SPECIMENS:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                grabSpecimenPosition = new Pose2d(7, 57, Math.toRadians(-90));
-                specimenScoringPosition = new Pose2d(0, 0, 0);
-                sampleScoringPosition = new Pose2d(0, 0, 0);
-                grabSpecimenPosition = new Pose2d(0, 0, 0);
-                midwayPose1 = new Pose2d(0, 0, 0);
-                parkPose = new Pose2d(0, 0, 0);
-                waitSecondsBeforeDrop = 0; //TODO: Adjust time to wait for alliance partner to move from board
+                specimenScoringPosition = new Pose2d(15, 0, 0);
+                grabSpecimenPosition = new Pose2d(3, 30, Math.toRadians(90));
+                coloredSample1Position = new Pose2d(0, 0, 0);
+                coloredSample2Position = new Pose2d(0, 0, 0);
+                coloredSample3Position = new Pose2d(0, 0, 0);
+                midwayPose1 = new Pose2d(10, 20, 90);
+                midwayPose2 = new Pose2d(30, 30, 90);
+                parkPose = new Pose2d(3, 15, 0);
 
                 break;
         }
@@ -325,6 +312,8 @@ public class RRAutoBase extends LinearOpMode{
             // Drive to color sample1 Position
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
+                            .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .strafeToLinearHeading(coloredSample1Position.position, coloredSample1Position.heading)
                             .build());
 
@@ -360,6 +349,8 @@ public class RRAutoBase extends LinearOpMode{
             // Drive to Color Sample2 Position
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
+                            .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .strafeToLinearHeading(coloredSample2Position.position, coloredSample2Position.heading)
                             .build());
 
@@ -395,6 +386,8 @@ public class RRAutoBase extends LinearOpMode{
             // Drive to colored Sample3 Position
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
+                            .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .strafeToLinearHeading(coloredSample3Position.position, coloredSample3Position.heading)
                             .build());
 

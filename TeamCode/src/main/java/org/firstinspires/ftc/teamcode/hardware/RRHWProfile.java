@@ -1,5 +1,12 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+/****
+ * DEPRECATED CLASS. Do Not Use!
+ */
+
+
+
+
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
