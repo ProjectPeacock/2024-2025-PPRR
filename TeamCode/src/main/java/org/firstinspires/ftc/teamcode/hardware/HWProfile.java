@@ -15,7 +15,7 @@ public class HWProfile {
     public DcMotor  leftBackDrive    = null;
     public DcMotor  rightBackDrive   = null;
     public DcMotor  extendMotor      = null; //
-    public DcMotor  hangMotor        = null;
+    public DcMotor  armMotor        = null;
     public Servo    wrist            = null; //the wrist servo
     public Servo    intakeRotate1    = null;
     public Servo    intakeRotate2    = null;
@@ -52,7 +52,7 @@ public class HWProfile {
 
     public final double ARM_COLLAPSED_INTO_ROBOT  = 100;
     public final double ARM_COLLECT               = 0 * ARM_TICKS_PER_DEGREE;
-    public final int    ARM_CLEAR_BARRIER         = 275;
+    public final int    ARM_CLEAR_BARRIER         = 250;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
     public final int    ARM_SCORE_SPECIMEN        = 300;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
@@ -67,7 +67,7 @@ public class HWProfile {
     public final double WRIST_FOLDED_OUT  = 0.5;
 
     /* A number in degrees that the triggers can adjust the arm position by */
-    public final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
+    public final double FUDGE_FACTOR = 45 * ARM_TICKS_PER_DEGREE;
 
     public final double CLAW_OPEN = 0;
     public final double CLAW_CLOSED = .6;
@@ -137,7 +137,7 @@ public class HWProfile {
         /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
 
         extendMotor = hwMap.dcMotor.get("liftMotor");
-        hangMotor       = hwMap.dcMotor.get("hangMotor");
+        armMotor       = hwMap.dcMotor.get("armMotor");
 
         /* Before starting the armMotor. We'll make sure the TargetPosition is set to 0.
         Then we'll set the RunMode to RUN_TO_POSITION. And we'll ask it to stop and reset encoder.
@@ -149,10 +149,10 @@ public class HWProfile {
         extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        hangMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hangMotor.setTargetPosition(0);
-        hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setTargetPosition(0);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
         /* Define and initialize servos.*/

@@ -106,7 +106,7 @@ public class SystemTesting extends LinearOpMode {
             robot.leftBackDrive.setPower(backLeftPower);
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
-            robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* Here we handle the three buttons that have direct control of the intake speed.
@@ -280,10 +280,10 @@ public class SystemTesting extends LinearOpMode {
                 liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
             }
 
-            robot.hangMotor.setTargetPosition((int) armPosition);
+            robot.armMotor.setTargetPosition((int) armPosition);
             robot.extendMotor.setTargetPosition((int) liftPosition);
 
-            robot.hangMotor.setPower(1);
+            robot.armMotor.setPower(1);
             robot.extendMotor.setPower(1);
 
 

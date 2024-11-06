@@ -32,34 +32,18 @@ public class RRMechOps {
      */
 
 
-//    public void intakePower(double power){robot.motorIntake.setPower(power);}
-
+//
     public void clawOpen(){
-        robot.claw.setPosition(params.INTAKE_DOWN_RIGHT);
+        robot.claw.setPosition(params.ARM_ATTACH_HANGING_HOOK);
     }
 
     public void clawClose(){
-        robot.claw.setPosition(params.INTAKE_MID_RIGHT);    // TODO: create target position constant
+       // robot.claw.setPosition(params.);    // TODO: create target position constant
     }
+    public void highScore(){
+        robot.armMotor.setPower(1);
+        //robot.armMotor.setPosition(params);
 
-    public void wristRotate(){
-        robot.wrist.setPosition(params.INTAKE_UP_RIGHT);    // TODO: create target position constant
-    }
-
-    public void wristOut(){
-        robot.wrist.setPosition(params.INTAKE_UP_RIGHT);    // TODO: create target position constant
-    }
-
-    private void armUp(){
-
-        robot.hangMotor.setPower(1);      // TODO: create power constant
-        robot.hangMotor.setTargetPosition(1); // TODO: create target position constant
-    }
-
-    private void armDown(){
-
-        robot.hangMotor.setPower(1);        // TODO: create power constant
-        robot.hangMotor.setTargetPosition(1);   // TODO: create target position constant
     }
 
 

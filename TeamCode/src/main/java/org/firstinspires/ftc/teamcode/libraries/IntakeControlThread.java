@@ -59,13 +59,6 @@ public class IntakeControlThread implements Runnable{
         robot.auto_MotorLiftFront.setTargetPosition(target);
     }
 
-    private void intakeForward() {
-        robot.motorIntake.setPower(params.INTAKE_IN_PWR);
-    }
-
-    private void intakeReverse() {
-        robot.motorIntake.setPower(params.INTAKE_OUT_PWR);
-    }
 
     private void intakeOff() {
         robot.motorIntake.setPower(0);
@@ -93,10 +86,7 @@ public class IntakeControlThread implements Runnable{
         kickTime.reset();
     }
 
-    public void setIntakeReverse(){
-        intakeReverse = true;
-        intakeReverse();
-    }
+
 
     public double getIntakeAmps() {
         return robot.motorIntake.getCurrent(CurrentUnit.AMPS);
@@ -194,12 +184,7 @@ public class IntakeControlThread implements Runnable{
             auto_runTo(target);
         }
 
-        // check for normal conditions
-        if(!intakeReverse && powerOn && (runTime.time() > EJECT_TIMER)) {
-            intakeForward();
-        }else if(intakeReverse && powerOn){
-            intakeReverse();
-        }
+
 
         if (kickDelaySet && (kickTime.time() > kickDelay)){
             intakeReverse = true;

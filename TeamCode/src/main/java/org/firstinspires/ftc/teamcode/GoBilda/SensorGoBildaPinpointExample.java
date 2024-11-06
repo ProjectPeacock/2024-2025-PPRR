@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
+
 
 import java.util.Locale;
 
@@ -74,7 +74,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        odo = hardwareMap.get(org.firstinspires.ftc.teamcode.GoBildaPinpointDriver.class,"odo");
+
 
         /*
         Set the odometry pod positions relative to the point that the odometry computer tracks around.

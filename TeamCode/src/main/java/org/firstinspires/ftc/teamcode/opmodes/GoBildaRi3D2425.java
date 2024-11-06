@@ -92,7 +92,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         telemetry.update();
 
         robot.extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.hangMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         /* Send telemetry message to signify robot waiting */
@@ -138,7 +138,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.leftBackDrive.setPower(backLeftPower);
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
-            robot.hangMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
@@ -191,7 +191,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 armPosition = robot.ARM_HIGH_SCORE;
                 liftPosition = robot.LIFT_COLLAPSED;
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                //robot.intake.setPower(robot.INTAKE_COLLECT);
 
             }
 
@@ -250,6 +249,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 liftPosition = 0;
             }
 
+
             /*
             This is probably my favorite piece of code on this robot. It's a clever little software
             solution to a problem the robot has.
@@ -266,7 +266,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             if (armPosition < 45 * robot.ARM_TICKS_PER_DEGREE){
-                armLiftComp = (0.25568 * liftPosition);
+                armLiftComp = (.25568 * liftPosition); //0.25568
             }
             else{
                 armLiftComp = 0;
@@ -277,7 +277,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             our armLiftComp, which adjusts the arm height for different lift extensions.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
 
-            //robot.armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
+            robot.armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
 
             //((DcMotorEx) robot.armMotor).setVelocity(2100);
             //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -303,13 +303,16 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            if (gamepad2.right_bumper && (liftPosition + 20) < robot.LIFT_SCORING_IN_HIGH_BASKET ){
+            if (gamepad2.right_bumper){
                 liftPosition += 20;
-//                liftPosition += 2800 * cycletime;
+                liftPosition += 2800 * cycletime;
             }
-            else if (gamepad2.left_bumper && (liftPosition - 20) > 0){
+            else if (gamepad2.left_bumper){
                 liftPosition -= 20;
-//                liftPosition -= 2800 * cycletime;
+                liftPosition -= 2800 * cycletime;
+            }
+            else if (gamepad2.right_stick_button){
+                robot.armMotor.setTargetPosition((int) (20 * robot.ARM_TICKS_PER_DEGREE));
             }
 
             // Double check.
@@ -321,16 +324,16 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
             }
 
-            robot.hangMotor.setTargetPosition((int) armPosition);
+            robot.armMotor.setTargetPosition((int) armPosition);
             robot.extendMotor.setTargetPosition((int) liftPosition);
 
-            robot.hangMotor.setPower(1);
+            robot.armMotor.setPower(1);
             robot.extendMotor.setPower(1);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
-           // if (((DcMotorEx) robot.armMotor).isOverCurrent()){
-             //   telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
+            if (((DcMotorEx) robot.armMotor).isOverCurrent()){
+                telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
 
             /* at the very end of the stream, we added a linear actuator kit to try to hang the robot on.
              * it didn't end up working... But here's the code we run it with. It just sets the motor
@@ -338,9 +341,9 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             if(gamepad2.left_stick_y > 0){
-                armPosition =- 1;
+                armPosition =- .5;
             } else if (gamepad2.left_stick_y < 0){
-                armPosition =+ 1;
+                armPosition =+ .5;
             }
 //            robot.hangMotor.setPower(-gamepad2.left_stick_y);
 
@@ -371,4 +374,4 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
         }
     }
-}
+}}

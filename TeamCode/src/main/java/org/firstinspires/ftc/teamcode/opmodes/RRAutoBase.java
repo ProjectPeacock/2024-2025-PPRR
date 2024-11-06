@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.libraries.RRMechOps;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Auto Samples", group = "Competition", preselectTeleOp = "TeleOp")
 public class RRAutoBase extends LinearOpMode{
 
@@ -120,6 +120,7 @@ public class RRAutoBase extends LinearOpMode{
         Pose2d yellowSample3Position = new Pose2d(0, 0, 0);
         Pose2d midwayPose1 = new Pose2d(0, 0, 0);
         Pose2d midwayPose2 = new Pose2d(0, 0, 0);
+        Pose2d parkPrepPose = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0, 0, 0);
         double waitSecondsBeforeDrop = 0;
         MecanumDrive drive = new MecanumDrive(hardwareMap, initPose);
@@ -136,11 +137,12 @@ public class RRAutoBase extends LinearOpMode{
 
             case RED_SAMPLES:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                sampleScoringPosition = new Pose2d(6, -20, Math.toRadians(-135));
-                yellowSample1Position = new Pose2d(30, 0, Math.toRadians(-90));
-                yellowSample2Position = new Pose2d(30, -5, Math.toRadians(-90));
-                yellowSample3Position = new Pose2d(30, -10, Math.toRadians(-90));
-                parkPose = new Pose2d(40, 0, 90);
+                sampleScoringPosition = new Pose2d(10, 15, Math.toRadians(135));
+                yellowSample1Position = new Pose2d(38, 0, Math.toRadians(90));
+                yellowSample2Position = new Pose2d(40, 5, Math.toRadians(90));
+                yellowSample3Position = new Pose2d(40, 10, Math.toRadians(90));
+                parkPrepPose = new Pose2d(50, 15, Math.toRadians(90));
+                parkPose = new Pose2d(50, -20, 90);
                 break;
 
             case BLUE_SPECIMENS:
@@ -179,6 +181,8 @@ public class RRAutoBase extends LinearOpMode{
             // Raise Arm to high bucket scoring position
             if(opModeIsActive()) {
                 // TODO: Add code to raise claw to high bucket
+               mechOps.highScore();
+
             }
 
             // Drive to scoring position
