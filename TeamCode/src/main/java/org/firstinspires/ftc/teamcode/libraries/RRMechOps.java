@@ -41,10 +41,10 @@ public class RRMechOps {
        // robot.claw.setPosition(params.);    // TODO: create target position constant
     }
     public void highScore(){
-        robot.armMotor.setPower(1);
-        //robot.armMotor.setPosition(params);
-
+        //robot.armMotor.setPower(1);
+        robot.armMotor.setTargetPosition((int) params.ARM_SCORE_SAMPLE_IN_LOW);
     }
+
 
 
 

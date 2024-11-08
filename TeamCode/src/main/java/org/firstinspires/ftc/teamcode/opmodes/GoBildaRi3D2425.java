@@ -234,6 +234,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
 
                 //boolean toggle for claw rotation
+
             } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25) {
                 if (clawRotated)
                     robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
@@ -245,6 +246,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 rotateClawRuntime.reset();
 
                 //boolean toggle for extension in and out
+
             } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
                 if (armRetracted)
                     liftPosition = robot.LIFT_COLLAPSED;
@@ -257,6 +259,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
 
                 //boolean toggle for arm climb
+
             } else if (gamepad2.dpad_up && armClimbRuntime.time() > 0.25) {
                 if (armClimb)
                     armPosition = robot.ARM_ATTACH_HANGING_HOOK;
@@ -335,6 +338,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
+            
             if (gamepad2.right_bumper){
                 liftPosition += 20;
                 liftPosition += 2800 * cycletime;

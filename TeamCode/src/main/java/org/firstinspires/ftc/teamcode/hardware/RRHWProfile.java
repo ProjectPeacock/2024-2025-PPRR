@@ -25,65 +25,22 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 public class RRHWProfile {
 
     /* Public OpMode members. */
-    public MotorEx motorLF = null;
+    public MotorEx leftFrontDrive = null;
     //
-    public MotorEx motorLR = null;
+    public MotorEx rightFrontDrive = null;
     //
-    public MotorEx motorRF = null;
+    public MotorEx leftBackDrive = null;
     //1
-    public MotorEx motorRR = null;
+    public MotorEx rightBackDrive = null;
     //2
-
-    public AnalogInput sensorDistanceFL = null;
-    public AnalogInput sensorDistanceFR = null;
-
-    public DcMotorEx auto_MotorLiftFront = null;
-
-    public DcMotorEx motorIntake = null;
+    public DcMotor armMotor = null;
+    public DcMotor extendMotor = null;
     //3
     public DcMotorEx odoPerp = null;
-    public MotorEx motorLiftFront = null;
-    public MotorEx motorLiftBack = null;
-    public MotorGroup lift=null;
-
-    public Servo servoIntakeLeft = null;
-    public Servo servoIntakeRight = null;
-    //port0CH
-    public Servo servoArm= null;
-    public Servo servoPlunger = null;
-    public Servo servoPlungerAngle = null;
-    public CRServo servoAgitator = null;
-    //port2CH
-    public Servo servoDrone = null;
-    //port1CH
-
+    public Servo wrist = null;
+    public Servo claw = null;
     public RevIMU imu = null;
-    //
-
-    public DigitalChannel beamBucketBottom = null;
-    //
-    public DigitalChannel beamBucketTop = null;
-    //
-
     public MecanumDrive mecanum = null;
-    // public MotorEx autoLight = null;
-
-    public DigitalChannel ledLeftFrontRed = null;
-    //
-    public DigitalChannel ledLeftFrontGreen = null;
-    //
-    public DigitalChannel ledRightFrontRed = null;
-    //
-    public DigitalChannel ledRightFrontGreen = null;
-    //
-    public DigitalChannel ledLeftRearRed = null;
-    //
-    public DigitalChannel ledLeftRearGreen = null;
-    //
-    public DigitalChannel ledRightRearRed = null;
-    //
-    public DigitalChannel ledRightRearGreen = null;
-    //
     public Boolean opModeTeleop = null;
 
     /* local OpMode members. */
@@ -105,46 +62,67 @@ public class RRHWProfile {
 
         if(opModeTeleop){
             //drive motor init
-            motorLF = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
-            motorLF.setRunMode(Motor.RunMode.RawPower);
-            motorLF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            motorLF.resetEncoder();
+            leftFrontDrive = new MotorEx(ahwMap, "frontLeftMotor", Motor.GoBILDA.RPM_1150);
+            leftFrontDrive.setRunMode(Motor.RunMode.RawPower);
+            leftFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            leftFrontDrive.resetEncoder();
 
-            motorLR = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
-            motorLR.setRunMode(Motor.RunMode.RawPower);
-            motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            motorLR.resetEncoder();
+            leftBackDrive = new MotorEx(ahwMap, "backLeftMotor", Motor.GoBILDA.RPM_1150);
+            leftBackDrive.setRunMode(Motor.RunMode.RawPower);
+            leftBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            leftBackDrive.resetEncoder();
 
-            motorRF = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
-            motorRF.setRunMode(Motor.RunMode.RawPower);
-            motorRF.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            motorRF.resetEncoder();
+            rightFrontDrive = new MotorEx(ahwMap, "frontRightMotor", Motor.GoBILDA.RPM_1150);
+            rightFrontDrive.setRunMode(Motor.RunMode.RawPower);
+            rightFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            rightFrontDrive.resetEncoder();
 
-            motorRR = new MotorEx(ahwMap, "motorRR", Motor.GoBILDA.RPM_1150);
-            motorRR.setRunMode(Motor.RunMode.RawPower);
-            motorRR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            motorRR.resetEncoder();
+            rightBackDrive = new MotorEx(ahwMap, "backRightMotor", Motor.GoBILDA.RPM_1150);
+            rightBackDrive.setRunMode(Motor.RunMode.RawPower);
+            rightBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            rightBackDrive.resetEncoder();
 
-            motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", 385,435);
-            motorLiftBack = new MotorEx(ahwMap, "motorLiftBack", 385,435);
-            motorLiftBack.resetEncoder();
+            //motorLiftFront = new MotorEx(ahwMap, "motorLiftFront", 385,435);
+            //motorLiftBack = new MotorEx(ahwMap, "motorLiftBack", 385,435);
+           // motorLiftBack.resetEncoder();
 
             odoPerp = hwMap.get(DcMotorEx.class, "odoPerp");
             odoPerp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            lift = new MotorGroup(motorLiftFront, motorLiftBack);
+
+           /* lift = new MotorGroup(motorLiftFront, motorLiftBack);
             lift.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             lift.set(0);
             lift.resetEncoder();
-
+*/
             //init imu
             imu = new RevIMU(ahwMap);
             imu.init();
 
             //drivebase init
-            mecanum = new com.arcrobotics.ftclib.drivebase.MecanumDrive(motorLF, motorRF, motorLR, motorRR);
-        } else {
+            mecanum = new com.arcrobotics.ftclib.drivebase.MecanumDrive(leftFrontDrive,leftBackDrive,rightBackDrive,rightFrontDrive);
+        } else   {
+          armMotor = hwMap.get(DcMotor.class, "armMotor");
+          armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+          armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+          armMotor.setPower(0);
 
+        }
+
+        extendMotor = hwMap.get(DcMotor.class, "extendMotor");
+        extendMotor.setDirection(DcMotor.Direction.FORWARD);
+        extendMotor.setTargetPosition(0);
+        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extendMotor.setPower(0);
+
+
+
+        wrist = hwMap.servo.get("wrist");
+        claw = hwMap.servo.get("claw");
+
+
+            /*
             auto_MotorLiftFront = hwMap.get(DcMotorEx.class, "motorLiftFront");
             auto_MotorLiftFront.setDirection(DcMotor.Direction.FORWARD);
             auto_MotorLiftFront.setTargetPosition(0);
@@ -198,6 +176,6 @@ public class RRHWProfile {
         sensorDistanceFL = hwMap.get(AnalogInput.class, "DistanceFL");
         sensorDistanceFR = hwMap.get(AnalogInput.class, "DistanceFR");
 
-    }   // end of init() method
+   */ }   // end of init() method
 
 }       // end of the HardwareProfile class
