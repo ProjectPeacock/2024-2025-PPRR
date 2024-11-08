@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -101,6 +102,21 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         /* Wait for the game driver to press play */
         waitForStart();
 
+
+        // Initializes ElapsedTimes. One for total runtime of the program and the others set up for toggles.
+        ElapsedTime totalRuntime = new ElapsedTime();
+        ElapsedTime clawRuntime = new ElapsedTime();
+        ElapsedTime rotateClawRuntime = new ElapsedTime();
+
+        totalRuntime.reset();
+        clawRuntime.reset();
+        rotateClawRuntime.reset();
+
+        // booleans for keeping track of toggles
+        boolean clawOpened = true;
+        boolean clawRotated = false;
+
+
         /* Run until the driver presses stop */
         while (opModeIsActive())
 
@@ -157,17 +173,19 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             three if statements, then it will set the intake servo's power to multiple speeds in
             one cycle. Which can cause strange behavior. */
 
-            if (gamepad1.left_bumper) {
-                robot.claw.setPosition(robot.CLAW_OPEN);
-//                robot.intakeRotate1.setPosition(.5);
-//                robot.intakeRotate2.setPosition(.5);
-                //} else if (gamepad1.right_stick_button) {
-                // robot.intake.setPower(robot.INTAKE_OFF);
-            } else if (gamepad1.right_bumper) {
-                robot.claw.setPosition(robot.CLAW_CLOSED);
+            // a boolean to keep track of whether the claw is opened or closed.
+
+            if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
+                if (clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_CLOSED);
+                    clawOpened = false;
+                } else if (!clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_OPEN);
+                    clawOpened = true;
+                }
+                clawRuntime.reset();
+
             }
-
-
             /* Here we create a "fudge factor" for the arm position.
             This allows you to adjust (or "fudge") the arm position slightly with the gamepad triggers.
             We want the left trigger to move the arm up, and right trigger to move the arm down.
@@ -208,20 +226,25 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
             }
 
-            else if (gamepad1.dpad_left) {
-                    /* This turns off the intake, folds in the wrist, and moves the arm
-                    back to folded inside the robot. This is also the starting configuration */
-                armPosition = robot.ARM_COLLAPSED_INTO_ROBOT;
-                //liftPosition = LIFT_COLLAPSED;
-                //.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
+            else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25){
+                if (clawRotated) {
+                    robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
+                    clawRotated = false;
+                } else if (!clawRotated) {
+                    robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                    clawRotated = true;
+                }
+                rotateClawRuntime.reset();
             }
+            else if (gamepad1.dpad_down){
+              liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
 
-            else if (gamepad1.dpad_right){
-                /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = robot.ARM_SCORE_SPECIMEN;
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-            }
+        }
+
+         else if (gamepad1.dpad_up){
+         liftPosition = robot.LIFT_COLLAPSED;
+         }
+
 
             else if (gamepad2.dpad_up){
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
