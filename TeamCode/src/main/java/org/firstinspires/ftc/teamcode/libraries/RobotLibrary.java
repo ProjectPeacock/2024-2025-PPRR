@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.competition.libraries;
+package org.firstinspires.ftc.teamcode.libraries;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

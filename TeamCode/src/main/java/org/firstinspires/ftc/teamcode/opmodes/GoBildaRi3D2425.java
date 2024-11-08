@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -101,6 +102,13 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         /* Wait for the game driver to press play */
         waitForStart();
 
+        // Initializes ElapsedTimes. One for total runtime of the program and the others set up for toggles.
+        ElapsedTime totalRuntime = new ElapsedTime();
+        ElapsedTime clawRuntime = new ElapsedTime();
+
+        totalRuntime.reset();
+        clawRuntime.reset();
+
         /* Run until the driver presses stop */
         while (opModeIsActive())
 
@@ -157,14 +165,17 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             three if statements, then it will set the intake servo's power to multiple speeds in
             one cycle. Which can cause strange behavior. */
 
-            if (gamepad1.left_bumper) {
-                robot.claw.setPosition(robot.CLAW_OPEN);
-//                robot.intakeRotate1.setPosition(.5);
-//                robot.intakeRotate2.setPosition(.5);
-                //} else if (gamepad1.right_stick_button) {
-                // robot.intake.setPower(robot.INTAKE_OFF);
-            } else if (gamepad1.right_bumper) {
-                robot.claw.setPosition(robot.CLAW_CLOSED);
+            // a boolean to keep track of whether the claw is opened or closed.
+            boolean clawOpened = true;
+            if (gamepad1.left_bumper && clawRuntime.time() > 0.25) {
+                if (clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_CLOSED);
+                    clawOpened = false;
+                } else if (!clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_OPEN);
+                    clawOpened = true;
+                }
+                clawRuntime.reset();
             }
 
 
@@ -370,6 +381,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
             telemetry.addData("liftMotor Current:",((DcMotorEx) robot.extendMotor).getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Elapsed Time: ", totalRuntime.time());
             telemetry.update();
 
         }
