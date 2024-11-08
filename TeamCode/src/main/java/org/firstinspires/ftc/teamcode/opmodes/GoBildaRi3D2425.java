@@ -270,8 +270,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             armClimbRuntime.reset();
 
-
-
             } else if (gamepad1.y){
                 armPosition = robot.ARM_EXTENSION_ANGLE;
             }

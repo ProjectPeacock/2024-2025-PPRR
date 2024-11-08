@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.hardware.CSAutoParams;
 import org.firstinspires.ftc.teamcode.hardware.RRHWProfile;
 
-public class IntakeControlThread implements Runnable{
+public class mechanismsControlThread implements Runnable{
 
     private final double STALL_CURRENT = 10;              // Value to check for stalled motor
     private final double EJECT_TIMER = 0.450;            // time to allow to auto-eject pixels
@@ -35,7 +35,7 @@ public class IntakeControlThread implements Runnable{
 
     public int target=0, offset=0;
 
-    public IntakeControlThread(RRHWProfile myRobot){
+    public mechanismsControlThread(RRHWProfile myRobot){
         this.robot = myRobot;
         this.params = new CSAutoParams();
 
@@ -97,39 +97,6 @@ public class IntakeControlThread implements Runnable{
         return (robot.motorIntake.getCurrent(CurrentUnit.AMPS) > STALL_CURRENT);
     }
 
-    private boolean bottomBeamMonitor(){
-        if(!robot.beamBucketBottom.getState()){
-            if(!bottomBeamFlag){
-                bottomBeamFlag = true;
-            }
-        } else {
-            bottomBeamFlag = false;
-        }
-        return bottomBeamFlag;
-    }
-
-    private boolean topBeamMonitor(){
-        if(!robot.beamBucketTop.getState()){
-            if(!topBeamFlag){
-                topBeamFlag = true;
-                topBeamTime.reset();
-            }
-        } else {
-            topBeamFlag = false;
-        }
-        return topBeamFlag;
-    }
-
-    private boolean bucketIsFull(){
-        // monitor the beam-break sensors in bucket and shut down the intake when two pixels are present
-        if(bottomBeamMonitor() && topBeamMonitor()){
-            if(topBeamTime.time() >= BUCKET_BEAM_TIMER){
-                bucketIsFull = true;
-            }
-        } else bucketIsFull = false;
-
-        return bucketIsFull;       //TODO: finish this method when the hardware is ready
-    }
 
     private void turnFrontLEDGreen(){
         robot.ledRightFrontGreen.setState(true);
@@ -163,20 +130,6 @@ public class IntakeControlThread implements Runnable{
         this.isDormant = isDormant;
     }
 
-    private void LEDControl(){
-        if(bottomBeamMonitor()){
-            turnFrontLEDGreen();
-        } else {
-            turnFrontLEDRed();
-        }
-
-        if(topBeamMonitor()){
-            turnRearLEDGreen();
-        } else {
-            turnRearLEDRed();
-        }
-    }
-
     private void controlMechs(){
         if(robot.opModeTeleop) {
             teleop_runTo(target, offset);
@@ -184,49 +137,6 @@ public class IntakeControlThread implements Runnable{
             auto_runTo(target);
         }
 
-
-
-        if (kickDelaySet && (kickTime.time() > kickDelay)){
-            intakeReverse = true;
-            ejectPixels();
-            kickDelaySet = false;        // flag to monitor when to turn on reverse intake to kick out extra pixels
-            timeoutTimer.reset();        // start clock to time out the intake
-            timeOutSet = true;           // tells process to turn off when the timeout has been reached
-        }
-
-        if(powerOn && timeOutSet && (timeoutTimer.time() > AUTO_SHUTOFF_TIMER)) {
-            // turn off intake and reset all values
-            setIntakeOff();
-            intakeReverse = false;
-            kickDelaySet = false;
-            timeOutSet = false;
-        }
-        if(!powerOn) {
-            intakeOff();
-            intakeReverse = false;
-            timeOutSet = false;
-            kickDelaySet = false;
-        }
-
-        // check for intake motor stall condition
-        // if motor is stalled, reverse spin it to eject the pixel causing the stall
-        if(checkStallCondition()){
-            runTime.reset();        // measure time for reverse before going forward again
-            ejectPixels();        // kick out the pixels causing stall
-            kickTime.reset();       // restart kicktime to provide more time for proper intake of pixels
-        }
-
-
-        // monitor pixel count
-        // Kickout extra pixels if there are more than 1 in the bucket
-        if(!intakeReverse && bucketIsFull() && powerOn){
-            intakeReverse = true;
-            ejectPixels();
-            timeoutTimer.reset();
-            timeOutSet = true;
-        }
-
-        LEDControl();           // set the color of the LEDs based on Pixel loading
     }
 
     public void stopThread(){
