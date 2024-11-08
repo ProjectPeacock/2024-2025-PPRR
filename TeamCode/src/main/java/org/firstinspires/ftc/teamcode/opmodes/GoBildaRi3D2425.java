@@ -89,6 +89,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
 
         robot.init(hardwareMap, true);
+
         telemetry.addData("Status:", "Initialized");
         telemetry.update();
 
@@ -385,6 +386,19 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             cycletime = looptime-oldtime;
             oldtime = looptime;
 
+            //Rumble controller for endgame and flash controller light red
+            if(totalRuntime.time() > 90 && totalRuntime.time()<90.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            } else if(totalRuntime.time() > 91 && totalRuntime.time()<91.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            } else if(totalRuntime.time() > 92 && totalRuntime.time()<92.25){
+                gamepad1.rumble(50);
+                gamepad1.setLedColor(255,0,0,50);
+            } else if(totalRuntime.time() > 93) {
+                gamepad1.setLedColor(255, 0, 0, 30000);
+            }
 
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
