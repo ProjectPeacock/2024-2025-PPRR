@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
-import org.firstinspires.ftc.teamcode.competition.libraries.RobotLibrary;
+import org.firstinspires.ftc.teamcode.libraries.RobotLibrary;
 
 @Autonomous(name = "rightAuto", group = "Robot")
 //@Disabled

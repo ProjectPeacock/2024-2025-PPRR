@@ -206,16 +206,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 /* This is the correct height to score the sample in the HIGH BASKET */
                 armPosition = robot.ARM_SCORE_SAMPLE_IN_LOW;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
-          //  }
-
-            //else if (gamepad1.dpad_down){
-             //   liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
-
             }
-
-           // else if (gamepad1.dpad_up){
-               // liftPosition = robot.LIFT_COLLAPSED;
-           // }
 
             else if (gamepad1.dpad_left) {
                     /* This turns off the intake, folds in the wrist, and moves the arm
@@ -288,8 +279,8 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             robot.armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
 
-          //  ((DcMotorEx) robot.armMotor).setVelocity(2100);
-           // robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //((DcMotorEx) robot.armMotor).setVelocity(2100);
+            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             /* Here we set the lift position based on the driver input.
@@ -314,11 +305,14 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
             if (gamepad2.right_bumper){
                 liftPosition += 20;
-               // liftPosition += 2800 * cycletime;
+                liftPosition += 2800 * cycletime;
             }
             else if (gamepad2.left_bumper){
                 liftPosition -= 20;
-              //  liftPosition -= 2800 * cycletime;
+                liftPosition -= 2800 * cycletime;
+            }
+            else if (gamepad2.right_stick_button){
+                robot.armMotor.setTargetPosition((int) (20 * robot.ARM_TICKS_PER_DEGREE));
             }
 
             // Double check.
@@ -351,7 +345,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             } else if (gamepad2.left_stick_y < 0){
                 armPosition =+ .5;
             }
-//
+//            robot.hangMotor.setPower(-gamepad2.left_stick_y);
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code
@@ -376,8 +370,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
             telemetry.addData("liftMotor Current:",((DcMotorEx) robot.extendMotor).getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("armPosition", robot.armMotor.getCurrentPosition());
-            telemetry.addData("LiftPositon", robot.extendMotor.getCurrentPosition());
             telemetry.update();
 
         }
