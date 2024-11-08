@@ -56,6 +56,7 @@ import org.firstinspires.ftc.teamcode.hardware.HWProfile;
  */
 
 
+/** @noinspection ALL*/
 @TeleOp(name="goBILDA Robot in 3 Days", group="Robot")
 //@Disabled
 public class GoBildaRi3D2425 extends LinearOpMode {
@@ -108,22 +109,29 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         ElapsedTime totalRuntime = new ElapsedTime();
         ElapsedTime clawRuntime = new ElapsedTime();
         ElapsedTime rotateClawRuntime = new ElapsedTime();
+        ElapsedTime armExtensionRuntime = new ElapsedTime();
+        ElapsedTime armClimbRuntime = new ElapsedTime();
+
+
 
         totalRuntime.reset();
         clawRuntime.reset();
         rotateClawRuntime.reset();
+        armExtensionRuntime.reset();
+        armClimbRuntime.reset();
+
 
         // booleans for keeping track of toggles
         boolean clawOpened = true;
         boolean clawRotated = false;
+        boolean armRetracted = true;
+        boolean armClimb = false;
+
 
 
         /* Run until the driver presses stop */
-        while (opModeIsActive())
-
-
-
-        {  double y = -gamepad1.left_stick_y;
+        while (opModeIsActive()) {
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
 
@@ -178,11 +186,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
                 if (clawOpened) {
-                    robot.claw.setPosition(robot.CLAW_CLOSED);
-                    clawOpened = false;
-                } else if (!clawOpened) {
                     robot.claw.setPosition(robot.CLAW_OPEN);
                     clawOpened = true;
+                } else if (!clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_CLOSED);
+                    clawOpened = false;
                 }
                 clawRuntime.reset();
 
@@ -205,64 +213,64 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
-            if(gamepad1.a){
+            if (gamepad1.a) {
                 /* This is the intaking/collecting arm position */
                 armPosition = robot.ARM_HIGH_SCORE;
                 liftPosition = robot.LIFT_COLLAPSED;
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
 
-            }
-
-            else if (gamepad1.b){
+            } else if (gamepad1.b) {
                     /*This is about 20° up from the collecting position to clear the barrier
                     Note here that we don't set the wrist position or the intake power when we
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
                 armPosition = robot.ARM_CLEAR_BARRIER;
-            }
 
-            else if (gamepad1.x){
+
+            } else if (gamepad1.x) {
                 /* This is the correct height to score the sample in the HIGH BASKET */
                 armPosition = robot.ARM_SCORE_SAMPLE_IN_LOW;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
-            }
 
-            else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25){
-                if (clawRotated) {
+
+                //boolean toggle for claw rotation
+            } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25) {
+                if (clawRotated)
                     robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                    clawRotated = false;
+                clawRotated = true;
                 } else if (!clawRotated) {
                     robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-                    clawRotated = true;
-                }
+                    clawRotated = false;
+
                 rotateClawRuntime.reset();
-            }
-            else if (gamepad1.dpad_down){
-              liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
 
-        }
+                //boolean toggle for extension in and out
+            } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
+                if (armRetracted)
+                    liftPosition = robot.LIFT_COLLAPSED;
+                armRetracted = false;
+            } else if (!armRetracted) {
+                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
+                armRetracted = true;
 
-         else if (gamepad1.dpad_up){
-         liftPosition = robot.LIFT_COLLAPSED;
-         }
+                armExtensionRuntime.reset();
 
 
-            else if (gamepad2.dpad_up){
-                /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                armPosition = robot.ARM_ATTACH_HANGING_HOOK;
-                //robot.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.y){
-                armPosition = robot.ARM_EXTENSION_ANGLE;
-            }
-
-            else if (gamepad2.dpad_down){
-                /* this moves the arm down to lift the robot up once it has been hooked */
+                //boolean toggle for arm climb
+            } else if (gamepad2.dpad_up && armClimbRuntime.time() > 0.25) {
+                if (armClimb)
+                    armPosition = robot.ARM_ATTACH_HANGING_HOOK;
+                armClimb = true;
+            } else if (!armClimb) {
                 armPosition = robot.ARM_WINCH_ROBOT;
-                //robot.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                armClimb = false;
+
+            armClimbRuntime.reset();
+
+
+
+            } else if (gamepad1.y){
+                armPosition = robot.ARM_EXTENSION_ANGLE;
             }
 
             else if (gamepad2.y) {
