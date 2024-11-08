@@ -52,7 +52,7 @@ public class HWProfile {
 
     public final double ARM_COLLAPSED_INTO_ROBOT  = 100;
     public final double ARM_COLLECT               = 0 * ARM_TICKS_PER_DEGREE;
-    public final int    ARM_CLEAR_BARRIER         = 250;
+    public final int    ARM_CLEAR_BARRIER         = 200;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
     public final int    ARM_SCORE_SPECIMEN        = 300;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
@@ -64,7 +64,7 @@ public class HWProfile {
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public final double WRIST_FOLDED_IN   = 0.1667;
-    public final double WRIST_FOLDED_OUT  = 0.5;
+    public final double WRIST_FOLDED_OUT  = 0.6;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public final double FUDGE_FACTOR = 45 * ARM_TICKS_PER_DEGREE;

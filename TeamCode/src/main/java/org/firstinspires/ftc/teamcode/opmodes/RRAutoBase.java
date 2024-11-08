@@ -129,36 +129,36 @@ public class RRAutoBase extends LinearOpMode{
             case BLUE_SAMPLES:
                 drive = new MecanumDrive(hardwareMap, initPose);
                 sampleScoringPosition = new Pose2d(6, -20, Math.toRadians(-135));
-                yellowSample1Position = new Pose2d(30, 0, Math.toRadians(-90));
-                yellowSample2Position = new Pose2d(30, -5, Math.toRadians(-90));
-                yellowSample3Position = new Pose2d(30, -10, Math.toRadians(-90));
+                yellowSample1Position = new Pose2d(30, 0, Math.toRadians(0));
+                yellowSample2Position = new Pose2d(30, -5, Math.toRadians(0));
+                yellowSample3Position = new Pose2d(30, -10, Math.toRadians(0));
                 parkPose = new Pose2d(40, 0, 90);
                 break;
 
             case RED_SAMPLES:
                 drive = new MecanumDrive(hardwareMap, initPose);
-                sampleScoringPosition = new Pose2d(10, 15, Math.toRadians(135));
-                yellowSample1Position = new Pose2d(38, 0, Math.toRadians(90));
-                yellowSample2Position = new Pose2d(40, 5, Math.toRadians(90));
-                yellowSample3Position = new Pose2d(40, 10, Math.toRadians(90));
+                sampleScoringPosition = new Pose2d(10, 10, Math.toRadians(165));
+                yellowSample1Position = new Pose2d(28, 7, Math.toRadians(-10));
+                yellowSample2Position = new Pose2d(28, 18, Math.toRadians(-15));
+                yellowSample3Position = new Pose2d(31, 21, Math.toRadians(35));
                 parkPrepPose = new Pose2d(50, 15, Math.toRadians(90));
-                parkPose = new Pose2d(50, -20, 90);
-                break;
-
-            case BLUE_SPECIMENS:
-                drive = new MecanumDrive(hardwareMap, initPose);
-                specimenScoringPosition = new Pose2d(15, 0, 0);
-                grabSpecimenPosition = new Pose2d(3, 30, Math.toRadians(90));
-                coloredSample1Position = new Pose2d(0, 0, 0);
-                coloredSample2Position = new Pose2d(0, 0, 0);
-                coloredSample3Position = new Pose2d(0, 0, 0);
-                midwayPose1 = new Pose2d(10, 20, 90);
-                midwayPose2 = new Pose2d(30, 30, 90);
-                parkPose = new Pose2d(3, 15, 0);
-
+                parkPose = new Pose2d(10, -90, Math.toRadians(90));
                 break;
 
             case RED_SPECIMENS:
+                drive = new MecanumDrive(hardwareMap, initPose);
+                specimenScoringPosition = new Pose2d(30, 0, Math.toRadians(0));
+                grabSpecimenPosition = new Pose2d(2, -55, Math.toRadians(-90));
+                coloredSample1Position = new Pose2d(50, -40, Math.toRadians(0));
+                coloredSample2Position = new Pose2d(50, -50, Math.toRadians(0));
+                coloredSample3Position = new Pose2d(50, -60, Math.toRadians(0));
+                midwayPose1 = new Pose2d(25, -35, Math.toRadians(-90));
+                midwayPose2 = new Pose2d(50, -35, Math.toRadians(0));
+                parkPose = new Pose2d(3, -60, Math.toRadians(0));
+
+                break;
+
+            case BLUE_SPECIMENS:
                 drive = new MecanumDrive(hardwareMap, initPose);
                 specimenScoringPosition = new Pose2d(15, 0, 0);
                 grabSpecimenPosition = new Pose2d(3, 30, Math.toRadians(90));
