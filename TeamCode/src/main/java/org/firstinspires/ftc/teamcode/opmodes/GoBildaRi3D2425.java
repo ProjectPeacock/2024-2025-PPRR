@@ -63,7 +63,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
     private final static HWProfile robot = new HWProfile();
 
-    double liftPosition = robot.EXTENSION_COLLAPSED;
+    double extensionPosition = robot.EXTENSION_COLLAPSED;
 
     double cycletime = 0;
     double looptime = 0;
@@ -217,7 +217,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             if (gamepad1.a) {
                 /* This is the intaking/collecting arm position */
                 elbowPosition = robot.ELBOW_TRAVERSE;
-                liftPosition = robot.EXTENSION_COLLAPSED;
+                extensionPosition = robot.EXTENSION_COLLAPSED;
                 servoWristPosition = robot.WRIST_FOLDED_OUT;
 
             } else if (gamepad1.b) {
@@ -249,10 +249,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 }
             } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
                 if (armRetracted) {
-                    liftPosition = robot.EXTENSION_COLLAPSED;
+                    extensionPosition = robot.EXTENSION_COLLAPSED;
                 armRetracted = true;
             } else if (!armRetracted) {
-                    liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+                    extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
                     armRetracted = false;
 
                     armExtensionRuntime.reset();
@@ -271,11 +271,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             }
 
             else if (gamepad2.y) {
-                liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             }
 
             else if (gamepad2.a) {
-                liftPosition = 0;
+                extensionPosition = 0;
             }
 
 
@@ -295,7 +295,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             if (elbowPosition < 45 * robot.ELBOW_TICKS_PER_DEGREE){
-                elbowLiftComp = (.25568 * liftPosition); //0.25568
+                elbowLiftComp = (.25568 * extensionPosition); //0.25568
             }
             else{
                 elbowLiftComp = 0;
@@ -335,30 +335,30 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             telemetry.addData("Extend Arm = ", "gamepad2.Right_Bumper");
             telemetry.addData("Retract Arm = ", "gamepad2.Left_Bumper");
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            if (gamepad2.right_bumper && (liftPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
-                liftPosition += 20;
+            if (gamepad2.right_bumper && (extensionPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+                extensionPosition += 20;
 //                liftPosition += 2800 * cycletime;
             }
-            else if (gamepad2.left_bumper && (liftPosition - 20) > 0){
-                liftPosition -= 20;
+            else if (gamepad2.left_bumper && (extensionPosition - 20) > 0){
+                extensionPosition -= 20;
 //                liftPosition -= 2800 * cycletime;
             }
 
             // Double check.
             // Checks again if liftPosition is beyond its boundries or not.
             // If it is outside the boundries, then it limits it to the boundries between 0 and the high bucket lift position.
-            if (liftPosition < 0) {
-                liftPosition = 0;
+            if (extensionPosition < 0) {
+                extensionPosition = 0;
             } else if(elbowPosition <= robot.ELBOW_TRAVERSE){
-                if(elbowPosition >= robot.EXTENSION_DOWN_MAX){
-                    elbowPosition = robot.EXTENSION_DOWN_MAX;
+                if(extensionPosition >= robot.EXTENSION_DOWN_MAX){
+                    extensionPosition = robot.EXTENSION_DOWN_MAX;
                 }
-            } else if (liftPosition > robot.EXTENSION_SCORING_IN_HIGH_BASKET) {
-                liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+            } else if (extensionPosition > robot.EXTENSION_SCORING_IN_HIGH_BASKET) {
+                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             }
 
             robot.elbowMotor.setTargetPosition((int) elbowPosition);
-            robot.extendMotor.setTargetPosition((int) liftPosition);
+            robot.extendMotor.setTargetPosition((int) extensionPosition);
 
             robot.elbowMotor.setPower(1);
             robot.extendMotor.setPower(1);
@@ -413,7 +413,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
-            telemetry.addData("lift variable", liftPosition);
+            telemetry.addData("lift variable", extensionPosition);
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
             telemetry.addData("liftMotor Current:",((DcMotorEx) robot.extendMotor).getCurrent(CurrentUnit.AMPS));
