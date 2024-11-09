@@ -62,22 +62,22 @@ public class RRHWProfile {
 
         if(opModeTeleop){
             //drive motor init
-            leftFrontDrive = new MotorEx(ahwMap, "frontLeftMotor", Motor.GoBILDA.RPM_1150);
+            leftFrontDrive = new MotorEx(ahwMap, "motorLF", Motor.GoBILDA.RPM_1150);
             leftFrontDrive.setRunMode(Motor.RunMode.RawPower);
             leftFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             leftFrontDrive.resetEncoder();
 
-            leftBackDrive = new MotorEx(ahwMap, "backLeftMotor", Motor.GoBILDA.RPM_1150);
+            leftBackDrive = new MotorEx(ahwMap, "motorLR", Motor.GoBILDA.RPM_1150);
             leftBackDrive.setRunMode(Motor.RunMode.RawPower);
             leftBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             leftBackDrive.resetEncoder();
 
-            rightFrontDrive = new MotorEx(ahwMap, "frontRightMotor", Motor.GoBILDA.RPM_1150);
+            rightFrontDrive = new MotorEx(ahwMap, "motorRF", Motor.GoBILDA.RPM_1150);
             rightFrontDrive.setRunMode(Motor.RunMode.RawPower);
             rightFrontDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             rightFrontDrive.resetEncoder();
 
-            rightBackDrive = new MotorEx(ahwMap, "backRightMotor", Motor.GoBILDA.RPM_1150);
+            rightBackDrive = new MotorEx(ahwMap, "motorRB", Motor.GoBILDA.RPM_1150);
             rightBackDrive.setRunMode(Motor.RunMode.RawPower);
             rightBackDrive.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             rightBackDrive.resetEncoder();

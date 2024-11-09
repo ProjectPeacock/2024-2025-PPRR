@@ -63,18 +63,18 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
     private final static HWProfile robot = new HWProfile();
 
-    double liftPosition = robot.LIFT_COLLAPSED;
+    double liftPosition = robot.EXTENSION_COLLAPSED;
 
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
 
-    double armLiftComp = 0;
+    double elbowLiftComp = 0;
 
 
     /* Variables that are used to set the arm to a specific position */
-    double armPosition = (int)robot.ARM_COLLAPSED_INTO_ROBOT;
-    double armPositionFudgeFactor;
+    double elbowPosition = (int)robot.ELBOW_COLLAPSED_INTO_ROBOT;
+    double elbowPositionFudgeFactor;
 
 
     @Override
@@ -87,6 +87,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         double forward;
         double rotate;
         double max;
+        double servoWristPosition=robot.WRIST_FOLDED_OUT;
 
 
         robot.init(hardwareMap, true);
@@ -95,7 +96,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         telemetry.update();
 
         robot.extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.elbowMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         /* Send telemetry message to signify robot waiting */
@@ -125,7 +126,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         boolean clawOpened = false;
         boolean clawRotated = true;
         boolean armRetracted = true;
-        //boolean armClimb = false;
+        boolean armClimb = false;
 
 
 
@@ -163,7 +164,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.leftBackDrive.setPower(backLeftPower);
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.elbowMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
@@ -186,10 +187,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
                 if (clawOpened) {
-                    robot.claw.setPosition(robot.CLAW_CLOSED);
+                    robot.servoClaw.setPosition(robot.CLAW_CLOSED);
                     clawOpened = false;
                 } else if (!clawOpened) {
-                    robot.claw.setPosition(robot.CLAW_OPEN);
+                    robot.servoClaw.setPosition(robot.CLAW_OPEN);
                     clawOpened = true;
                 }
                 clawRuntime.reset();
@@ -203,7 +204,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             than the other, it "wins out". This variable is then multiplied by our FUDGE_FACTOR.
             The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
 
-            armPositionFudgeFactor = robot.FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
+            elbowPositionFudgeFactor = robot.FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
 
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.
@@ -215,67 +216,62 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             if (gamepad1.a) {
                 /* This is the intaking/collecting arm position */
-                armPosition = robot.ARM_HIGH_SCORE;
-                liftPosition = robot.LIFT_COLLAPSED;
-                robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
+                elbowPosition = robot.ELBOW_TRAVERSE;
+                liftPosition = robot.EXTENSION_COLLAPSED;
+                servoWristPosition = robot.WRIST_FOLDED_OUT;
 
             } else if (gamepad1.b) {
                     /*This is about 20° up from the collecting position to clear the barrier
                     Note here that we don't set the wrist position or the intake power when we
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
-                armPosition = robot.ARM_CLEAR_BARRIER;
-
+                elbowPosition = robot.ELBOW_CLEAR_BARRIER;
 
             } else if (gamepad1.x) {
                 /* This is the correct height to score the sample in the HIGH BASKET */
-                armPosition = robot.ARM_SCORE_SAMPLE_IN_LOW;
+                elbowPosition = robot.ELBOW_SCORE_SAMPLE_IN_LOW;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
 
 
                 //boolean toggle for claw rotation
 
-            } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25) {
-                if (clawRotated)
-                    robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                clawRotated = false;
+            } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.15) {
+                if (clawRotated) {
+                    servoWristPosition = robot.WRIST_FOLDED_OUT;
+                    clawRotated = false;
                 } else if (!clawRotated) {
-                    robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                    servoWristPosition = robot.WRIST_FOLDED_IN;
                     clawRotated = true;
 
-                rotateClawRuntime.reset();
+                    rotateClawRuntime.reset();
 
-                //boolean toggle for extension in and out
-
+                    //boolean toggle for extension in and out
+                }
             } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
-                if (armRetracted)
-                    liftPosition = robot.LIFT_COLLAPSED;
+                if (armRetracted) {
+                    liftPosition = robot.EXTENSION_COLLAPSED;
                 armRetracted = true;
             } else if (!armRetracted) {
-                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
-                armRetracted = false;
+                    liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+                    armRetracted = false;
 
-                armExtensionRuntime.reset();
+                    armExtensionRuntime.reset();
 
-
+                }
                 //boolean toggle for arm climb
 
-          /*  } else if (gamepad2.dpad_up && armClimbRuntime.time() > 0.25) {
-                if (armClimb)
-                    armPosition = robot.ARM_ATTACH_HANGING_HOOK;
-                armClimb = true;
-            } else if (!armClimb) {
-                armPosition = robot.ARM_WINCH_ROBOT;
-                armClimb = false;
+            } else if (gamepad2.dpad_up) {
+                    elbowPosition = robot.ELBOW_HANG_ATTACH;
 
-            armClimbRuntime.reset();
-*/
+            } else if (gamepad2.dpad_down) {
+                elbowPosition = robot.ELBOW_HANG_CLIMB;
+
             } else if (gamepad1.y){
-                armPosition = robot.ARM_EXTENSION_ANGLE;
+                elbowPosition = robot.ELBOW_EXTENSION_ANGLE;
             }
 
             else if (gamepad2.y) {
-                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
+                liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             }
 
             else if (gamepad2.a) {
@@ -298,11 +294,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             to a value.
              */
 
-            if (armPosition < 45 * robot.ARM_TICKS_PER_DEGREE){
-                armLiftComp = (.25568 * liftPosition); //0.25568
+            if (elbowPosition < 45 * robot.ELBOW_TICKS_PER_DEGREE){
+                elbowLiftComp = (.25568 * liftPosition); //0.25568
             }
             else{
-                armLiftComp = 0;
+                elbowLiftComp = 0;
             }
 
            /* Here we set the target position of our arm to match the variable that was selected
@@ -310,7 +306,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             our armLiftComp, which adjusts the arm height for different lift extensions.
             We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
 
-            robot.armMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
+            //robot.elbowMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
 
             //((DcMotorEx) robot.armMotor).setVelocity(2100);
             //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -336,17 +332,16 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            
-            if (gamepad2.right_bumper){
+            telemetry.addData("Extend Arm = ", "gamepad2.Right_Bumper");
+            telemetry.addData("Retract Arm = ", "gamepad2.Left_Bumper");
+            // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
+            if (gamepad2.right_bumper && (liftPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
                 liftPosition += 20;
-                liftPosition += 2800 * cycletime;
+//                liftPosition += 2800 * cycletime;
             }
-            else if (gamepad2.left_bumper){
+            else if (gamepad2.left_bumper && (liftPosition - 20) > 0){
                 liftPosition -= 20;
-                liftPosition -= 2800 * cycletime;
-            }
-            else if (gamepad2.right_stick_button){
-                robot.armMotor.setTargetPosition((int) (20 * robot.ARM_TICKS_PER_DEGREE));
+//                liftPosition -= 2800 * cycletime;
             }
 
             // Double check.
@@ -354,19 +349,23 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             // If it is outside the boundries, then it limits it to the boundries between 0 and the high bucket lift position.
             if (liftPosition < 0) {
                 liftPosition = 0;
-            } else if (liftPosition > robot.LIFT_SCORING_IN_HIGH_BASKET) {
-                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
+            } else if(elbowPosition <= robot.ELBOW_TRAVERSE){
+                if(elbowPosition >= robot.EXTENSION_DOWN_MAX){
+                    elbowPosition = robot.EXTENSION_DOWN_MAX;
+                }
+            } else if (liftPosition > robot.EXTENSION_SCORING_IN_HIGH_BASKET) {
+                liftPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             }
 
-            robot.armMotor.setTargetPosition((int) armPosition);
+            robot.elbowMotor.setTargetPosition((int) elbowPosition);
             robot.extendMotor.setTargetPosition((int) liftPosition);
 
-            robot.armMotor.setPower(1);
+            robot.elbowMotor.setPower(1);
             robot.extendMotor.setPower(1);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
-            if (((DcMotorEx) robot.armMotor).isOverCurrent()){
+            if (((DcMotorEx) robot.elbowMotor).isOverCurrent()){
                 telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
 
             /* at the very end of the stream, we added a linear actuator kit to try to hang the robot on.
@@ -375,11 +374,12 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              */
 
             if(gamepad2.left_stick_y > 0){
-                armPosition =- .5;
+                elbowPosition =- .5;
             } else if (gamepad2.left_stick_y < 0){
-                armPosition =+ .5;
+                elbowPosition =+ .5;
             }
 //            robot.hangMotor.setPower(-gamepad2.left_stick_y);
+            robot.servoWrist.setPosition(robot.WRIST_FOLDED_OUT);
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code

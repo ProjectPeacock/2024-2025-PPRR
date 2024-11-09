@@ -14,14 +14,14 @@ public class RRMechOps {
     public CSAutoParams params;
 
     /*
-     * Constructor method
+     * Constructor
      */
     public RRMechOps(HWProfile myRobot, LinearOpMode myOpMode, CSAutoParams autoParams){
         robot = myRobot;
         opMode = myOpMode;
         params = autoParams;
 
-    }   // close DriveMecanum constructor Method
+    }   // close RRMechOps constructor
 
     /*
      * ###########################################################################################
@@ -31,37 +31,36 @@ public class RRMechOps {
      * ###########################################################################################
      */
 
+    public void clawOpen(){
 
-//
-public void clawOpen(){
-
-    robot.claw.setPosition(robot.CLAW_OPEN);
-}
+        robot.servoClaw.setPosition(robot.CLAW_OPEN);
+    }
 
     public void rotateClaw(double targetClawPosition){
-        robot.wrist.setPosition(targetClawPosition);
+        robot.servoWrist.setPosition(targetClawPosition);
     }
 
     public void clawClose(){
-        robot.claw.setPosition(robot.CLAW_CLOSED);    // TODO: create target position constant
+        robot.servoClaw.setPosition(robot.CLAW_CLOSED);    // TODO: create target position constant
     }
 
     public void scoreHighBasket(){
         // set arm position to up
-        robot.armMotor.setPower(1);
+        robot.elbowMotor.setPower(1);
+        robot.elbowMotor.setTargetPosition((int) robot.ELBOW_HIGH_BASKET);
 
         // extend arm to full reach
-        extendArm(robot.ARM_HIGH_SCORE);
+        extendArm((int) robot.EXTENSION_SCORING_IN_HIGH_BASKET);
         //robot.armMotor.setPosition(params);
 
     }
 
     public void scoreLowBasket(){
         // set arm position to up
-        robot.armMotor.setPower(1);
+        robot.elbowMotor.setPower(1);
 
         // extend arm to full reach
-        robot.extendMotor.setPower(robot.LIFT_SCORING_IN_LOW_BASKET);
+        robot.elbowMotor.setPower((int) robot.ELBOW_HIGH_BASKET);
         //robot.armMotor.setPosition(params);
     }
 
@@ -73,17 +72,14 @@ public void clawOpen(){
     public void resetArm(){
         // retract the arm
         robot.extendMotor.setPower(1);
-        robot.extendMotor.setTargetPosition(robot.ARM_RESET);     // TODO: replace 0 with parameter constant
+        robot.extendMotor.setTargetPosition((int) robot.EXTENSION_COLLAPSED);
 
-        // give arm time to retract before lowering to avoid tipping the bot
-        opMode.sleep(1000);
-
-        // reset arm position to down
-        robot.armMotor.setPower(0.25);
-        robot.armMotor.setTargetPosition(0);        // TODO: replace 0 with parameter constant
+        robot.elbowMotor.setPower(0.5);
+        robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
 
         // set claw to reset position
-        robot.claw.setPosition(0);                  // TODO: set claw to target position
+        robot.servoClaw.setPosition(robot.CLAW_OPEN);
+        robot.servoWrist.setPosition(robot.WRIST_FOLDED_OUT);
     }
 
     /***

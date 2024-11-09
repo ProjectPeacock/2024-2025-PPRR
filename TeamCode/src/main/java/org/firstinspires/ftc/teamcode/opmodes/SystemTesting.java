@@ -24,7 +24,6 @@ package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -38,17 +37,17 @@ public class SystemTesting extends LinearOpMode {
 
     private final static HWProfile robot = new HWProfile();
 
-    double liftPosition = robot.LIFT_COLLAPSED;
+    double extensionPosition = robot.EXTENSION_COLLAPSED;
 
     double cycletime = 0;
     double looptime = 0;
     double oldtime = 0;
 
-    double armLiftComp = 0;
+    double elbowLiftComp = 0;
 
     /* Variables that are used to set the arm to a specific position */
-    double armPosition = (int)robot.ARM_COLLAPSED_INTO_ROBOT;
-    double armPositionFudgeFactor;
+    double elbowPosition = (int)robot.ELBOW_COLLAPSED_INTO_ROBOT;
+    double elbowPositionFudgeFactor;
 
     @Override
     public void runOpMode() {
@@ -60,6 +59,7 @@ public class SystemTesting extends LinearOpMode {
         double backLeftPower = 0;
         double frontRightPower = 0;
         double backRightPower = 0;
+        double servoWristPosition = robot.WRIST_FOLDED_OUT;
 
         robot.init(hardwareMap, true);
         telemetry.addData("System Test:", "Initialized");
@@ -126,9 +126,9 @@ public class SystemTesting extends LinearOpMode {
             telemetry.addData("Close Claw = ", "GAMEPAD1.Right_Bumper");
 
             if (gamepad1.left_bumper) {
-                robot.claw.setPosition(robot.CLAW_OPEN);
+                robot.servoClaw.setPosition(robot.CLAW_OPEN);
             } else if (gamepad1.right_bumper) {
-                robot.claw.setPosition(robot.CLAW_CLOSED);
+                robot.servoClaw.setPosition(robot.CLAW_CLOSED);
             }
 
             /* Here we create a "fudge factor" for the arm position.
@@ -139,7 +139,7 @@ public class SystemTesting extends LinearOpMode {
             than the other, it "wins out". This variable is then multiplied by our FUDGE_FACTOR.
             The FUDGE_FACTOR is the number of degrees that we can adjust the arm by with this function. */
 
-            armPositionFudgeFactor = robot.FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
+            elbowPositionFudgeFactor = robot.FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
 
             /* Here we implement a set of if else statements to set our arm to different scoring positions.
             We check to see if a specific button is pressed, and then move the arm (and sometimes
@@ -150,7 +150,7 @@ public class SystemTesting extends LinearOpMode {
 
             telemetry.addData("Intake Position Down = ", "GAMEPAD1.A");
             telemetry.addData("Intake Position 20 Degrees= ", "GAMEPAD1.B");
-            telemetry.addData("Arm Position low basket = ", "GAMEPAD1.X");
+            telemetry.addData("Elbow Position low basket = ", "GAMEPAD1.X");
             telemetry.addData("wrist in, retract arm = ", "GAMEPAD1.DPAD_LEFT");
             telemetry.addData("High Chamber Scoring = ", "GAMEPAD1.DPAD_RIGHT");
             telemetry.addData("Hang Up = ", "GAMEPAD1.DPAD_UP");
@@ -159,47 +159,46 @@ public class SystemTesting extends LinearOpMode {
             telemetry.addData("Reset Lift = ", "GAMEPAD2.A");
             if(gamepad1.a){
                 /* This is the intaking/collecting arm position */
-                armPosition = robot.ARM_HIGH_SCORE;
-                liftPosition = robot.LIFT_COLLAPSED;
-                robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                //robot.intake.setPower(robot.INTAKE_COLLECT);
+                elbowPosition = robot.ELBOW_TRAVERSE;
+                extensionPosition = robot.EXTENSION_COLLAPSED;
+                servoWristPosition = robot.WRIST_FOLDED_OUT;
             } else if (gamepad1.b){
                     /*This is about 20° up from the collecting position to clear the barrier
                     Note here that we don't set the wrist position or the intake power when we
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
-                armPosition = robot.ARM_CLEAR_BARRIER;
+                elbowPosition = robot.ELBOW_CLEAR_BARRIER;
             } else if (gamepad1.x){
                 /* This is the correct height to score the sample in the HIGH BASKET */
-                armPosition = robot.ARM_SCORE_SAMPLE_IN_LOW;
+                elbowPosition = robot.ELBOW_SCORE_SAMPLE_IN_LOW;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
             } else if (gamepad1.dpad_left) {
                     /* This turns off the intake, folds in the wrist, and moves the arm
                     back to folded inside the robot. This is also the starting configuration */
-                armPosition = robot.ARM_COLLAPSED_INTO_ROBOT;
+                elbowPosition = robot.ELBOW_COLLAPSED_INTO_ROBOT;
                 //liftPosition = LIFT_COLLAPSED;
                 //.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
+                servoWristPosition = robot.WRIST_FOLDED_OUT;
             } else if (gamepad1.dpad_right){
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
-                armPosition = robot.ARM_SCORE_SPECIMEN;
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                elbowPosition = robot.ELBOW_SCORE_SPECIMEN;
+                servoWristPosition = robot.WRIST_FOLDED_IN;
             } else if (gamepad2.dpad_up){
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
-                armPosition = robot.ARM_ATTACH_HANGING_HOOK;
+                elbowPosition = robot.ELBOW_HANG_ATTACH;
                 //robot.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                servoWristPosition = robot.WRIST_FOLDED_IN;
             } else if (gamepad1.y){
-                armPosition = robot.ARM_EXTENSION_ANGLE;
+                elbowPosition = robot.ELBOW_EXTENSION_ANGLE;
             } else if (gamepad2.dpad_down){
                 /* this moves the arm down to lift the robot up once it has been hooked */
-                armPosition = robot.ARM_WINCH_ROBOT;
+                elbowPosition = robot.ELBOW_HANG_CLIMB;
                 //robot.intake.setPower(robot.INTAKE_OFF);
-                robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
+                servoWristPosition = robot.WRIST_FOLDED_IN;
             } else if (gamepad2.y) {
-                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
+                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             } else if (gamepad2.a) {
-                liftPosition = 0;
+                extensionPosition = 0;
             }
 
             /*
@@ -217,11 +216,11 @@ public class SystemTesting extends LinearOpMode {
             to a value.
              */
 
-            if (armPosition < 45 * robot.ARM_TICKS_PER_DEGREE){
-                armLiftComp = (0.25568 * liftPosition);
+            if (elbowPosition < 45 * robot.ELBOW_TICKS_PER_DEGREE){
+                elbowLiftComp = (0.25568 * extensionPosition);
             }
             else{
-                armLiftComp = 0;
+                elbowLiftComp = 0;
             }
 
            /* Here we set the target position of our arm to match the variable that was selected
@@ -254,29 +253,38 @@ public class SystemTesting extends LinearOpMode {
             we are only incrementing it a small amount each cycle.
              */
 
+            telemetry.addData("Extend Arm = ", "gamepad2.Right_Bumper");
+            telemetry.addData("Retract Arm = ", "gamepad2.Left_Bumper");
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            if (gamepad2.right_bumper && (liftPosition + 20) < robot.LIFT_SCORING_IN_HIGH_BASKET ){
-                liftPosition += 20;
+            if (gamepad2.right_bumper && (extensionPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+                extensionPosition += 20;
 //                liftPosition += 2800 * cycletime;
             }
-            else if (gamepad2.left_bumper && (liftPosition - 20) > 0){
-                liftPosition -= 20;
+            else if (gamepad2.left_bumper && (extensionPosition - 20) > 0){
+                extensionPosition -= 20;
 //                liftPosition -= 2800 * cycletime;
             }
 
             // Double check.
             // Checks again if liftPosition is beyond its boundries or not.
             // If it is outside the boundries, then it limits it to the boundries between 0 and the high bucket lift position.
-            if (liftPosition < 0) {
-                liftPosition = 0;
-            } else if (liftPosition > robot.LIFT_SCORING_IN_HIGH_BASKET) {
-                liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
+            if (extensionPosition < 0) {
+                extensionPosition = 0;
+            } else if(elbowPosition <= robot.ELBOW_TRAVERSE){
+                if(extensionPosition >= robot.EXTENSION_DOWN_MAX){
+                    extensionPosition = robot.EXTENSION_DOWN_MAX;
+                }
+            } else if (extensionPosition > robot.EXTENSION_SCORING_IN_HIGH_BASKET) {
+                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
             }
 
-            robot.armMotor.setTargetPosition((int) armPosition);
-            robot.extendMotor.setTargetPosition((int) liftPosition);
 
-            robot.armMotor.setPower(1);
+
+
+            robot.elbowMotor.setTargetPosition((int) elbowPosition);
+            robot.extendMotor.setTargetPosition((int) extensionPosition);
+
+            robot.elbowMotor.setPower(1);
             robot.extendMotor.setPower(1);
 
 
@@ -290,11 +298,13 @@ public class SystemTesting extends LinearOpMode {
              */
 
             if(gamepad2.left_stick_y > 0){
-                armPosition =- 1;
+                elbowPosition =- 1;
             } else if (gamepad2.left_stick_y < 0){
-                armPosition =+ 1;
+                elbowPosition =+ 1;
             }
 //            robot.hangMotor.setPower(-gamepad2.left_stick_y);
+
+            robot.servoWrist.setPosition(servoWristPosition);
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code
@@ -311,11 +321,10 @@ public class SystemTesting extends LinearOpMode {
             cycletime = looptime-oldtime;
             oldtime = looptime;
 
-
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
-            telemetry.addData("lift variable", liftPosition);
+            telemetry.addData("lift variable", extensionPosition);
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
             telemetry.addData("liftMotor Current:",((DcMotorEx) robot.extendMotor).getCurrent(CurrentUnit.AMPS));
