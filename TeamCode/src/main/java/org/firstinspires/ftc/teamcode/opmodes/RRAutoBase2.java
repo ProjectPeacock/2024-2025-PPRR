@@ -214,7 +214,7 @@ public class RRAutoBase2 extends LinearOpMode{
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
 //                mechOps.resetArm();
-                safeWaitSeconds(0.75);
+                safeWaitSeconds(0.85);
                 mechOps.clawClose();
                 safeWaitSeconds(0.3);
                 robot.elbowMotor.setPower(1);
@@ -272,7 +272,7 @@ public class RRAutoBase2 extends LinearOpMode{
             if(opModeIsActive()) {
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
-                safeWaitSeconds(0.75);
+                safeWaitSeconds(0.85);
                 mechOps.clawClose();
                 safeWaitSeconds(0.3);
                 robot.elbowMotor.setPower(1);
