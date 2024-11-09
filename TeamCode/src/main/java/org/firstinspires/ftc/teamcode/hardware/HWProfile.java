@@ -60,7 +60,9 @@ public class HWProfile {
     public final double ARM_ATTACH_HANGING_HOOK   = 150 * ARM_TICKS_PER_DEGREE;
     public final double ARM_WINCH_ROBOT           = 0  * ARM_TICKS_PER_DEGREE;
     public final int    ARM_HIGH_SCORE            = 600;
+    public final int    ARM_RESET                 = 10;
     public final double ARM_EXTENSION_ANGLE       = 400;
+
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public final double WRIST_FOLDED_IN   = 0.1667;

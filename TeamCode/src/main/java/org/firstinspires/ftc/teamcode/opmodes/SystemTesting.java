@@ -55,11 +55,11 @@ public class SystemTesting extends LinearOpMode {
         /*
         These variables are private to the OpMode, and are used to control the drivetrain.
          */
-        double left;
-        double right;
-        double forward;
-        double rotate;
-        double max;
+        double denominator = 0;
+        double frontLeftPower = 0;
+        double backLeftPower = 0;
+        double frontRightPower = 0;
+        double backRightPower = 0;
 
         robot.init(hardwareMap, true);
         telemetry.addData("System Test:", "Initialized");
@@ -70,6 +70,7 @@ public class SystemTesting extends LinearOpMode {
         telemetry.update();
         /* Wait for the game driver to press play */
         waitForStart();
+        double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         /* Run until the driver presses stop */
         while (opModeIsActive())
@@ -85,7 +86,7 @@ public class SystemTesting extends LinearOpMode {
                 robot.imu.resetYaw();
             }
 
-            double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -96,18 +97,16 @@ public class SystemTesting extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
+            denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            frontLeftPower = (rotY + rotX + rx) / denominator;
+            backLeftPower = (rotY - rotX + rx) / denominator;
+            frontRightPower = (rotY - rotX - rx) / denominator;
+            backRightPower = (rotY + rotX - rx) / denominator;
 
             robot.leftFrontDrive.setPower(frontLeftPower);
             robot.leftBackDrive.setPower(backLeftPower);
             robot.rightFrontDrive.setPower(frontRightPower);
             robot.rightBackDrive.setPower(backRightPower);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             /* Here we handle the three buttons that have direct control of the intake speed.
             These control the continuous rotation servo that pulls elements into the robot,
@@ -122,6 +121,9 @@ public class SystemTesting extends LinearOpMode {
             at the same time. "a" will win over and the intake will turn on. If we just had
             three if statements, then it will set the intake servo's power to multiple speeds in
             one cycle. Which can cause strange behavior. */
+
+            telemetry.addData("Open Claw = ", "GAMEPAD1.Left_Bumper");
+            telemetry.addData("Close Claw = ", "GAMEPAD1.Right_Bumper");
 
             if (gamepad1.left_bumper) {
                 robot.claw.setPosition(robot.CLAW_OPEN);
@@ -146,66 +148,57 @@ public class SystemTesting extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
+            telemetry.addData("Intake Position Down = ", "GAMEPAD1.A");
+            telemetry.addData("Intake Position 20 Degrees= ", "GAMEPAD1.B");
+            telemetry.addData("Arm Position low basket = ", "GAMEPAD1.X");
+            telemetry.addData("wrist in, retract arm = ", "GAMEPAD1.DPAD_LEFT");
+            telemetry.addData("High Chamber Scoring = ", "GAMEPAD1.DPAD_RIGHT");
+            telemetry.addData("Hang Up = ", "GAMEPAD1.DPAD_UP");
+            telemetry.addData("Hang Down = ", "GAMEPAD1.DPAD_Down");
+            telemetry.addData("Lift Scoring Position = ", "GAMEPAD2.Y");
+            telemetry.addData("Reset Lift = ", "GAMEPAD2.A");
             if(gamepad1.a){
                 /* This is the intaking/collecting arm position */
                 armPosition = robot.ARM_HIGH_SCORE;
                 liftPosition = robot.LIFT_COLLAPSED;
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
                 //robot.intake.setPower(robot.INTAKE_COLLECT);
-            }
-
-            else if (gamepad1.b){
+            } else if (gamepad1.b){
                     /*This is about 20° up from the collecting position to clear the barrier
                     Note here that we don't set the wrist position or the intake power when we
                     select this "mode", this means that the intake and wrist will continue what
                     they were doing before we clicked left bumper. */
                 armPosition = robot.ARM_CLEAR_BARRIER;
-            }
-
-            else if (gamepad1.x){
+            } else if (gamepad1.x){
                 /* This is the correct height to score the sample in the HIGH BASKET */
                 armPosition = robot.ARM_SCORE_SAMPLE_IN_LOW;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
-            }
-
-            else if (gamepad1.dpad_left) {
+            } else if (gamepad1.dpad_left) {
                     /* This turns off the intake, folds in the wrist, and moves the arm
                     back to folded inside the robot. This is also the starting configuration */
                 armPosition = robot.ARM_COLLAPSED_INTO_ROBOT;
                 //liftPosition = LIFT_COLLAPSED;
                 //.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-            }
-
-            else if (gamepad1.dpad_right){
+            } else if (gamepad1.dpad_right){
                 /* This is the correct height to score SPECIMEN on the HIGH CHAMBER */
                 armPosition = robot.ARM_SCORE_SPECIMEN;
                 robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad2.dpad_up){
+            } else if (gamepad2.dpad_up){
                 /* This sets the arm to vertical to hook onto the LOW RUNG for hanging */
                 armPosition = robot.ARM_ATTACH_HANGING_HOOK;
                 //robot.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad1.y){
+            } else if (gamepad1.y){
                 armPosition = robot.ARM_EXTENSION_ANGLE;
-            }
-
-            else if (gamepad2.dpad_down){
+            } else if (gamepad2.dpad_down){
                 /* this moves the arm down to lift the robot up once it has been hooked */
                 armPosition = robot.ARM_WINCH_ROBOT;
                 //robot.intake.setPower(robot.INTAKE_OFF);
                 robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-            }
-
-            else if (gamepad2.y) {
+            } else if (gamepad2.y) {
                 liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
-            }
-
-            else if (gamepad2.a) {
+            } else if (gamepad2.a) {
                 liftPosition = 0;
             }
 

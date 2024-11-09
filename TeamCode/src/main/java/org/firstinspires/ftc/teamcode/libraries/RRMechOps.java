@@ -33,20 +33,58 @@ public class RRMechOps {
 
 
 //
-    public void clawOpen(){
-        robot.claw.setPosition(params.ARM_ATTACH_HANGING_HOOK);
+public void clawOpen(){
+
+    robot.claw.setPosition(robot.CLAW_OPEN);
+}
+
+    public void rotateClaw(double targetClawPosition){
+        robot.wrist.setPosition(targetClawPosition);
     }
 
     public void clawClose(){
-       // robot.claw.setPosition(params.);    // TODO: create target position constant
-    }
-    public void highScore(){
-        //robot.armMotor.setPower(1);
-        robot.armMotor.setTargetPosition((int) params.ARM_SCORE_SAMPLE_IN_LOW);
+        robot.claw.setPosition(robot.CLAW_CLOSED);    // TODO: create target position constant
     }
 
+    public void scoreHighBasket(){
+        // set arm position to up
+        robot.armMotor.setPower(1);
 
+        // extend arm to full reach
+        extendArm(robot.ARM_HIGH_SCORE);
+        //robot.armMotor.setPosition(params);
 
+    }
+
+    public void scoreLowBasket(){
+        // set arm position to up
+        robot.armMotor.setPower(1);
+
+        // extend arm to full reach
+        robot.extendMotor.setPower(robot.LIFT_SCORING_IN_LOW_BASKET);
+        //robot.armMotor.setPosition(params);
+    }
+
+    public void extendArm(int targetPosition){
+        robot.extendMotor.setPower(1);
+        robot.extendMotor.setTargetPosition(targetPosition);
+    }
+
+    public void resetArm(){
+        // retract the arm
+        robot.extendMotor.setPower(1);
+        robot.extendMotor.setTargetPosition(robot.ARM_RESET);     // TODO: replace 0 with parameter constant
+
+        // give arm time to retract before lowering to avoid tipping the bot
+        opMode.sleep(1000);
+
+        // reset arm position to down
+        robot.armMotor.setPower(0.25);
+        robot.armMotor.setTargetPosition(0);        // TODO: replace 0 with parameter constant
+
+        // set claw to reset position
+        robot.claw.setPosition(0);                  // TODO: set claw to target position
+    }
 
     /***
      * This method provides a delay that will cancel if the program is stopped
@@ -60,6 +98,5 @@ public class RRMechOps {
         while (!opMode.isStopRequested() && timer.time() < time) {
         }
     }
-
 
 }   // close the RRMechOps class
