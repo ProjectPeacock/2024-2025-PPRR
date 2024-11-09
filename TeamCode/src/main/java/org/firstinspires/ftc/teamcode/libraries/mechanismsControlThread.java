@@ -47,23 +47,6 @@ public class mechanismsControlThread implements Runnable{
         offset=bottomOffset;
     }
 
-    private void teleop_runTo(int target, int offset){
-        controller.setPID(params.P,params.I,params.D);
-        double pid = controller.calculate((robot.motorLiftFront.getCurrentPosition()-offset), target);
-        double ff = Math.cos(Math.toRadians((target/params.ticks_in_degrees)))*params.F;
-        robot.lift.set(Range.clip(pid + ff, -1, 1));
-    }
-
-    private void auto_runTo(int target){
-        robot.auto_MotorLiftFront.setPower(1);
-        robot.auto_MotorLiftFront.setTargetPosition(target);
-    }
-
-
-    private void intakeOff() {
-        robot.motorIntake.setPower(0);
-    }
-
     public void setIntakeOn(){
         kickTime.reset();
         powerOn = true;
@@ -81,50 +64,7 @@ public class mechanismsControlThread implements Runnable{
         }
     }
 
-    private void ejectPixels() {
-        robot.motorIntake.setPower(-1);
-        kickTime.reset();
-    }
 
-
-
-    public double getIntakeAmps() {
-        return robot.motorIntake.getCurrent(CurrentUnit.AMPS);
-    }
-
-    public boolean checkStallCondition(){
-
-        return (robot.motorIntake.getCurrent(CurrentUnit.AMPS) > STALL_CURRENT);
-    }
-
-
-    private void turnFrontLEDGreen(){
-        robot.ledRightFrontGreen.setState(true);
-        robot.ledRightFrontRed.setState(false);
-        robot.ledLeftFrontGreen.setState(true);
-        robot.ledLeftFrontRed.setState(false);
-    }
-
-    private void turnFrontLEDRed(){
-        robot.ledRightFrontGreen.setState(false);
-        robot.ledRightFrontRed.setState(true);
-        robot.ledLeftFrontGreen.setState(false);
-        robot.ledLeftFrontRed.setState(true);
-    }
-
-    private void turnRearLEDGreen(){
-        robot.ledRightRearGreen.setState(true);
-        robot.ledRightRearRed.setState(false);
-        robot.ledLeftRearGreen.setState(true);
-        robot.ledLeftRearRed.setState(false);
-    }
-
-    private void turnRearLEDRed(){
-        robot.ledRightRearGreen.setState(false);
-        robot.ledRightRearRed.setState(true);
-        robot.ledLeftRearGreen.setState(false);
-        robot.ledLeftRearRed.setState(true);
-    }
 
     public void setDormant (boolean dormancy){
         this.isDormant = isDormant;
@@ -132,9 +72,9 @@ public class mechanismsControlThread implements Runnable{
 
     private void controlMechs(){
         if(robot.opModeTeleop) {
-            teleop_runTo(target, offset);
+//            teleop_runTo(target, offset);
         } else if(!robot.opModeTeleop){
-            auto_runTo(target);
+//            auto_runTo(target);
         }
 
     }
