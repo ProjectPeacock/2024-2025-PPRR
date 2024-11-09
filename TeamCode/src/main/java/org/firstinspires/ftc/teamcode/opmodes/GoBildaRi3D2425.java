@@ -122,10 +122,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
 
         // booleans for keeping track of toggles
-        boolean clawOpened = true;
-        boolean clawRotated = false;
+        boolean clawOpened = false;
+        boolean clawRotated = true;
         boolean armRetracted = true;
-        boolean armClimb = false;
+        //boolean armClimb = false;
 
 
 
@@ -186,11 +186,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
                 if (clawOpened) {
-                    robot.claw.setPosition(robot.CLAW_OPEN);
-                    clawOpened = true;
-                } else if (!clawOpened) {
                     robot.claw.setPosition(robot.CLAW_CLOSED);
                     clawOpened = false;
+                } else if (!clawOpened) {
+                    robot.claw.setPosition(robot.CLAW_OPEN);
+                    clawOpened = true;
                 }
                 clawRuntime.reset();
 
@@ -238,10 +238,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.25) {
                 if (clawRotated)
                     robot.wrist.setPosition(robot.WRIST_FOLDED_OUT);
-                clawRotated = true;
+                clawRotated = false;
                 } else if (!clawRotated) {
                     robot.wrist.setPosition(robot.WRIST_FOLDED_IN);
-                    clawRotated = false;
+                    clawRotated = true;
 
                 rotateClawRuntime.reset();
 
@@ -250,17 +250,17 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
                 if (armRetracted)
                     liftPosition = robot.LIFT_COLLAPSED;
-                armRetracted = false;
+                armRetracted = true;
             } else if (!armRetracted) {
                 liftPosition = robot.LIFT_SCORING_IN_HIGH_BASKET;
-                armRetracted = true;
+                armRetracted = false;
 
                 armExtensionRuntime.reset();
 
 
                 //boolean toggle for arm climb
 
-            } else if (gamepad2.dpad_up && armClimbRuntime.time() > 0.25) {
+          /*  } else if (gamepad2.dpad_up && armClimbRuntime.time() > 0.25) {
                 if (armClimb)
                     armPosition = robot.ARM_ATTACH_HANGING_HOOK;
                 armClimb = true;
@@ -269,7 +269,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 armClimb = false;
 
             armClimbRuntime.reset();
-
+*/
             } else if (gamepad1.y){
                 armPosition = robot.ARM_EXTENSION_ANGLE;
             }
@@ -397,7 +397,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             oldtime = looptime;
 
             //Rumble controller for endgame and flash controller light red
-            if(totalRuntime.time() > 90 && totalRuntime.time()<90.25){
+           /* if(totalRuntime.time() > 90 && totalRuntime.time()<90.25){
                 gamepad1.rumble(50);
                 gamepad1.setLedColor(255,0,0,50);
             } else if(totalRuntime.time() > 91 && totalRuntime.time()<91.25){
@@ -409,7 +409,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             } else if(totalRuntime.time() > 93) {
                 gamepad1.setLedColor(255, 0, 0, 30000);
             }
-
+*/
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
