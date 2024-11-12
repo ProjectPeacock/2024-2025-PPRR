@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.GoBilda.GoBildaPinpointDriver;
+
 public class HWProfile {
 
     /* Declare OpMode members. */
@@ -21,6 +23,7 @@ public class HWProfile {
     public Servo    intakeRotate2    = null;
     public Servo    servoClaw        = null;
     public IMU      imu              = null;
+    public GoBildaPinpointDriver pinpoint; // Declare OpMode member for the Odometry Computer
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -133,6 +136,9 @@ public class HWProfile {
                     RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
             // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
             imu.initialize(parameters);
+            pinpoint = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
+            pinpoint.resetPosAndIMU();
+
 
         }
 

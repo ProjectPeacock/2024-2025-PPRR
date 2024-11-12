@@ -28,7 +28,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
+
+import java.util.Locale;
 
 
 @TeleOp(name="System Test", group="Robot")
@@ -86,7 +90,13 @@ public class SystemTesting extends LinearOpMode {
                 robot.imu.resetYaw();
             }
 
-            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            robot.pinpoint.update();    //update the IMU value
+            Pose2D pos = robot.pinpoint.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Position", data);
+
+//            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            botHeading = pos.getHeading(AngleUnit.DEGREES);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -148,15 +158,6 @@ public class SystemTesting extends LinearOpMode {
             it folds out the wrist to make sure it is in the correct orientation to intake, and it
             turns the intake on to the COLLECT mode.*/
 
-            telemetry.addData("Intake Position Down = ", "GAMEPAD1.A");
-            telemetry.addData("Intake Position 20 Degrees= ", "GAMEPAD1.B");
-            telemetry.addData("Elbow Position low basket = ", "GAMEPAD1.X");
-            telemetry.addData("wrist in, retract arm = ", "GAMEPAD1.DPAD_LEFT");
-            telemetry.addData("High Chamber Scoring = ", "GAMEPAD1.DPAD_RIGHT");
-            telemetry.addData("Hang Up = ", "GAMEPAD1.DPAD_UP");
-            telemetry.addData("Hang Down = ", "GAMEPAD1.DPAD_Down");
-            telemetry.addData("Lift Scoring Position = ", "GAMEPAD2.Y");
-            telemetry.addData("Reset Lift = ", "GAMEPAD2.A");
             if(gamepad1.a){
                 /* This is the intaking/collecting arm position */
                 elbowPosition = robot.ELBOW_TRAVERSE;
@@ -324,6 +325,15 @@ public class SystemTesting extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
+            telemetry.addData("Intake Position Down = ", "GAMEPAD1.A");
+            telemetry.addData("Intake Position 20 Degrees= ", "GAMEPAD1.B");
+            telemetry.addData("Elbow Position low basket = ", "GAMEPAD1.X");
+            telemetry.addData("wrist in, retract arm = ", "GAMEPAD1.DPAD_LEFT");
+            telemetry.addData("High Chamber Scoring = ", "GAMEPAD1.DPAD_RIGHT");
+            telemetry.addData("Hang Up = ", "GAMEPAD1.DPAD_UP");
+            telemetry.addData("Hang Down = ", "GAMEPAD1.DPAD_Down");
+            telemetry.addData("Lift Scoring Position = ", "GAMEPAD2.Y");
+            telemetry.addData("Reset Lift = ", "GAMEPAD2.A");
             telemetry.addData("lift variable", extensionPosition);
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
