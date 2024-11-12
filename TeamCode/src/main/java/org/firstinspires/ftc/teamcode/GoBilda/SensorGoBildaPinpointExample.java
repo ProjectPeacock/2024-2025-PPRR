@@ -196,5 +196,6 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
             telemetry.update();
 
         }
-    }}
+    }
+}
 
