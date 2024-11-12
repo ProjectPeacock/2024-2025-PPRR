@@ -36,6 +36,10 @@ public class RRMechOps {
         robot.servoClaw.setPosition(robot.CLAW_OPEN);
     }
 
+    public void poleTouch(){
+        robot.poleToucherServo.setPosition(robot.POLE_UP);
+    }
+
     public void rotateClaw(double targetClawPosition){
         robot.servoWrist.setPosition(targetClawPosition);
     }
@@ -48,6 +52,7 @@ public class RRMechOps {
         // set arm position to up
         robot.elbowMotor.setPower(1);
         robot.elbowMotor.setTargetPosition((int) robot.ELBOW_HIGH_BASKET);
+
 
         // extend arm to full reach
         extendArm((int) robot.EXTENSION_SCORING_IN_HIGH_BASKET);
