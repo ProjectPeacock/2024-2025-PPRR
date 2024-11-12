@@ -24,6 +24,7 @@ public class HWProfile {
     public Servo    servoClaw        = null;
     public IMU      imu              = null;
     public GoBildaPinpointDriver pinpoint; // Declare OpMode member for the Odometry Computer
+    public Servo    poleToucherServo = null;
 
 
     /* This constant is the number of encoder ticks for each degree of rotation of the arm.
@@ -54,35 +55,42 @@ public class HWProfile {
     as far from the starting position, decrease it. */
 
     public final double ARM_COLLECT                = 0 * ELBOW_TICKS_PER_DEGREE;
-    public final double ELBOW_HANG_CLIMB           = 0  * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_HANG_CLIMB           = -10  * ELBOW_TICKS_PER_DEGREE;
     public final int    ELBOW_RESET                = 10;
     public final double ELBOW_HANG_ATTACH          = 135 * ELBOW_TICKS_PER_DEGREE;
     public final double ELBOW_COLLAPSED_INTO_ROBOT = 100;
-    public final double ELBOW_SCORE_SAMPLE_IN_LOW = 100 * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SCORE_SAMPLE_IN_LOW = 105 * ELBOW_TICKS_PER_DEGREE;
     public final int    ELBOW_CLEAR_BARRIER        = 200;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
-    public final int    ELBOW_SCORE_SPECIMEN       = 300;
+    //public final int    ELBOW_SCORE_SPECIMEN       = 300;
     public final double ELBOW_EXTENSION_ANGLE      = 400;
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
     public final int    ELBOW_TRAVERSE             = 600;
     public final double    ELBOW_HIGH_BASKET       = 100 * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SPECIMEN_PICKUP      = 14 * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SCORE_SPECIMEN       = 50  * ELBOW_TICKS_PER_DEGREE;
+
 
 
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public final double WRIST_FOLDED_IN   = 0.1667;
-    public final double WRIST_FOLDED_OUT  = 0.6;
+    public final double WRIST_FOLDED_OUT  = 0.5;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public final double FUDGE_FACTOR = 45 * ELBOW_TICKS_PER_DEGREE;
 
     public final double CLAW_OPEN = 0;
-    public final double CLAW_CLOSED = .6;
+    public final double CLAW_CLOSED = .7;
 
     public final double EXTENSION_TICKS_PER_MM = (111132.0 / 289.0) / 120.0;
     public final double EXTENSION_COLLAPSED = 0 * EXTENSION_TICKS_PER_MM;
     public final double EXTENSION_SCORING_IN_LOW_BASKET = 0 * EXTENSION_TICKS_PER_MM;
-    public final double EXTENSION_SCORING_IN_HIGH_BASKET = 480 * EXTENSION_TICKS_PER_MM;
-    public final int    EXTENSION_DOWN_MAX         = 1000;
+    public final double EXTENSION_SCORING_IN_HIGH_BASKET = 490 * EXTENSION_TICKS_PER_MM;
+    public final int    EXTENSION_DOWN_MAX         = 1200;
+
+
+    public final double POLE_DOWN = 0;
+    public final double POLE_UP = 1;
 
     public Boolean opModeTeleop = null;
 
@@ -129,7 +137,7 @@ public class HWProfile {
 
 
             // Retrieve the IMU from the hardware map
-            imu = hwMap.get(IMU.class, "imu");
+            imu  = hwMap.get(IMU.class, "imu");
             // Adjust the orientation parameters to match your robot
             IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -169,6 +177,9 @@ public class HWProfile {
 
         /* Make sure that the intake is off, and the wrist is folded in. */
         servoClaw = hwMap.get(Servo.class, "claw");
+
+        poleToucherServo = hwMap.get(Servo.class, "poleToucher");
+
 
     }
 }

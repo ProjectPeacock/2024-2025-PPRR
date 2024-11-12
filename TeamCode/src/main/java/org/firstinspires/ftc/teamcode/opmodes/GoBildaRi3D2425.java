@@ -72,6 +72,8 @@ public class GoBildaRi3D2425 extends LinearOpMode {
     double elbowLiftComp = 0;
 
 
+
+
     /* Variables that are used to set the arm to a specific position */
     double elbowPosition = (int)robot.ELBOW_COLLAPSED_INTO_ROBOT;
     double elbowPositionFudgeFactor;
@@ -87,7 +89,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         double forward;
         double rotate;
         double max;
-        double servoWristPosition=robot.WRIST_FOLDED_OUT;
+        double servoWristPosition = robot.WRIST_FOLDED_OUT;
+        double poleToucherPosition = robot.POLE_DOWN;
+
+
 
 
         robot.init(hardwareMap, true);
@@ -117,16 +122,16 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
         totalRuntime.reset();
         clawRuntime.reset();
-        rotateClawRuntime.reset();
-        armExtensionRuntime.reset();
-        armClimbRuntime.reset();
+       // rotateClawRuntime.reset();
+       // armExtensionRuntime.reset();
+       // armClimbRuntime.reset();
 
 
         // booleans for keeping track of toggles
         boolean clawOpened = false;
-        boolean clawRotated = true;
+        //boolean clawRotated = true;
         boolean armRetracted = true;
-        boolean armClimb = false;
+        //boolean armClimb = false;
 
 
 
@@ -166,7 +171,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.rightBackDrive.setPower(backRightPower);
             robot.elbowMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
 
 
             /* Here we handle the three buttons that have direct control of the intake speed.
@@ -233,20 +237,13 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
 
 
-                //boolean toggle for claw rotation
-
-            } else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.15) {
-                if (clawRotated) {
+            } else if (gamepad1.dpad_right) {
                     servoWristPosition = robot.WRIST_FOLDED_OUT;
-                    clawRotated = false;
-                } else if (!clawRotated) {
-                    servoWristPosition = robot.WRIST_FOLDED_IN;
-                    clawRotated = true;
 
-                    rotateClawRuntime.reset();
+            } else if (gamepad1.dpad_up) {
+                    servoWristPosition = robot.WRIST_FOLDED_IN;
 
                     //boolean toggle for extension in and out
-                }
             } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
                 if (armRetracted) {
                     extensionPosition = robot.EXTENSION_COLLAPSED;
@@ -272,10 +269,18 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             else if (gamepad2.y) {
                 extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+                poleToucherPosition = robot.POLE_DOWN;
             }
 
             else if (gamepad2.a) {
                 extensionPosition = 0;
+                poleToucherPosition = robot.POLE_UP;
+            }
+            else if (gamepad1.left_stick_button){
+                elbowPosition = robot.ELBOW_SPECIMEN_PICKUP;
+            }
+            else if (gamepad1.dpad_left){
+                elbowPosition = robot.ELBOW_SCORE_SPECIMEN;
             }
 
 
@@ -365,8 +370,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
-            if (((DcMotorEx) robot.elbowMotor).isOverCurrent()){
-                telemetry.addLine("MOTOR EXCEEDED CURRENT LIMIT!");
 
             /* at the very end of the stream, we added a linear actuator kit to try to hang the robot on.
              * it didn't end up working... But here's the code we run it with. It just sets the motor
@@ -379,7 +382,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 elbowPosition =+ .5;
             }
 //            robot.hangMotor.setPower(-gamepad2.left_stick_y);
-            robot.servoWrist.setPosition(robot.WRIST_FOLDED_OUT);
+                robot.servoWrist.setPosition(servoWristPosition);
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code
@@ -421,4 +424,4 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
         }
     }
-}}
+}
