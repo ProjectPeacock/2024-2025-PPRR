@@ -144,9 +144,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
-            if (gamepad1.options) {
-                robot.imu.resetYaw();
-            }
+           // if (gamepad1.options) {
+            //    robot.pinpoint.recalibrateIMU();
+                //recalibrates the IMU without resetting position
+          //  }
 
             double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
