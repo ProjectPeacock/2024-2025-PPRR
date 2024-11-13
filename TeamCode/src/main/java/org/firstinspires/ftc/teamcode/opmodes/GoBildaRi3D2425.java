@@ -31,7 +31,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
+
+import java.util.Locale;
 
 /*
  * This is (mostly) the OpMode used in the goBILDA Robot in 3 Days for the 24-25 Into The Deep FTC Season.
@@ -109,6 +113,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         telemetry.update();
         /* Wait for the game driver to press play */
         waitForStart();
+        double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
 
         // Initializes ElapsedTimes. One for total runtime of the program and the others set up for toggles.
@@ -122,14 +127,14 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
         totalRuntime.reset();
         clawRuntime.reset();
-       // rotateClawRuntime.reset();
-       // armExtensionRuntime.reset();
+        rotateClawRuntime.reset();
+        // armExtensionRuntime.reset();
        // armClimbRuntime.reset();
 
 
         // booleans for keeping track of toggles
         boolean clawOpened = false;
-        //boolean clawRotated = true;
+        boolean clawRotated = true;
         boolean armRetracted = true;
         //boolean armClimb = false;
 
@@ -144,14 +149,19 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
-           // if (gamepad1.options) {
-            //    robot.pinpoint.recalibrateIMU();
+            if (gamepad1.options) {
+                robot.pinpoint.recalibrateIMU();
                 //recalibrates the IMU without resetting position
-          //  }
+            }
 
-            double botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            robot.pinpoint.update();    //update the IMU value
+            Pose2D pos = robot.pinpoint.getPosition();
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("Position", data);
 
-            // Rotate the movement direction counter to the bot's rotation
+            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            //botHeading = pos.getHeading(AngleUnit.DEGREES);
+
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
             double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
@@ -282,6 +292,16 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             }
             else if (gamepad1.dpad_left){
                 elbowPosition = robot.ELBOW_SCORE_SPECIMEN;
+            }
+         else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.15) {
+                if (clawRotated) {
+                    servoWristPosition = robot.WRIST_FOLDED_OUT;
+                    clawRotated = false;
+                } else if (!clawRotated) {
+                    servoWristPosition = robot.WRIST_FOLDED_IN;
+                    clawRotated = true;
+
+                }
             }
 
 

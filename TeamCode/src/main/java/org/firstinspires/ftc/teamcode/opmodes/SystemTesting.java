@@ -92,14 +92,13 @@ public class SystemTesting extends LinearOpMode {
             //recalibrates the IMU without resetting position
               }
 
-
             robot.pinpoint.update();    //update the IMU value
             Pose2D pos = robot.pinpoint.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Position", data);
 
-//            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-            botHeading = pos.getHeading(AngleUnit.DEGREES);
+            botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            //botHeading = pos.getHeading(AngleUnit.DEGREES);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);

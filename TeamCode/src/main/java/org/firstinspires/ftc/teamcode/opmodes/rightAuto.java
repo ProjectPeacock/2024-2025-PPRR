@@ -43,6 +43,7 @@ public class rightAuto extends LinearOpMode {
         telemetry.addData("Status: ","Charge!!");
         telemetry.update();
 
+        robot.servoClaw.setPosition(robot.CLAW_CLOSED);
         lib.moveDirection("vertical", 0.5);
         sleep(150);
         lib.halt();

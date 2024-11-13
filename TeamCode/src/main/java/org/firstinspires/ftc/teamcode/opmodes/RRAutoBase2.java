@@ -155,7 +155,7 @@ public class RRAutoBase2 extends LinearOpMode{
         sampleScoringPosition = new Pose2d(4, 18, Math.toRadians(135));
         yellowSample1Position = new Pose2d(30, 8, Math.toRadians(0));
         yellowSample2Position = new Pose2d(30, 15, Math.toRadians(0));
-        yellowSample3Position = new Pose2d(35, 20, Math.toRadians(45));
+        yellowSample3Position = new Pose2d(34, 20, Math.toRadians(45));
         midwayPose1 = new Pose2d(10,13,90);
         midwayPose2 = new Pose2d(57,0, Math.toRadians(-180));
         parkPrepPose = new Pose2d(10, -90, Math.toRadians(-90));
