@@ -104,6 +104,8 @@ public class RRAutoBase2 extends LinearOpMode{
         Pose2d yellowSample3Position = new Pose2d(0, 0, 0);
         Pose2d midwayPose1 = new Pose2d(0, 0, 0);
         Pose2d midwayPose2 = new Pose2d(0, 0, 0);
+        Pose2d midwayPose3 = new Pose2d(0, 0, 0);
+
         Pose2d parkPrepPose = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0, 0, 0);
         double waitSecondsBeforeDrop = 0;
@@ -153,13 +155,14 @@ public class RRAutoBase2 extends LinearOpMode{
 
         drive = new MecanumDrive(hardwareMap, initPose);
         sampleScoringPosition = new Pose2d(4, 18, Math.toRadians(135));
-        yellowSample1Position = new Pose2d(30, 8, Math.toRadians(0));
-        yellowSample2Position = new Pose2d(30, 15, Math.toRadians(0));
-        yellowSample3Position = new Pose2d(34, 20, Math.toRadians(45));
-        midwayPose1 = new Pose2d(10,13,90);
-        midwayPose2 = new Pose2d(57,0, Math.toRadians(-180));
+        yellowSample1Position = new Pose2d(31, 7, Math.toRadians(0));
+        yellowSample2Position = new Pose2d(31, 17, Math.toRadians(0));
+        yellowSample3Position = new Pose2d(37.5, 20, Math.toRadians(90));
+        midwayPose1 = new Pose2d(10,13, Math.toRadians(90));
+        midwayPose2 = new Pose2d(10,0, Math.toRadians(0));
+        midwayPose3 = new Pose2d(30,0, Math.toRadians(90));
         parkPrepPose = new Pose2d(10, -90, Math.toRadians(-90));
-        parkPose = new Pose2d(57, -20, Math.toRadians(-180));
+        parkPose = new Pose2d(0, 0, Math.toRadians(0));
 
         /**
          * For Sample Scoring into high basket
@@ -173,7 +176,7 @@ public class RRAutoBase2 extends LinearOpMode{
                 safeWaitSeconds(0.25);
                 mechOps.rotateClaw(robot.WRIST_FOLDED_OUT);
                 mechOps.scoreHighBasket();
-                safeWaitSeconds(0.5);
+                safeWaitSeconds(0.25);
             }
 
             // Drive to scoring position
@@ -217,7 +220,7 @@ public class RRAutoBase2 extends LinearOpMode{
 //                mechOps.resetArm();
                 safeWaitSeconds(0.85);
                 mechOps.clawClose();
-                safeWaitSeconds(0.3);
+                safeWaitSeconds(0.5);
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_TRAVERSE);
                 // TODO: Add code to grab a sample from the floor
@@ -271,6 +274,8 @@ public class RRAutoBase2 extends LinearOpMode{
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(yellowSample2Position.position, yellowSample2Position.heading)
                             .build());
+
+
             // Pick up Sample2
             if(opModeIsActive()) {
                 robot.elbowMotor.setPower(1);
@@ -328,22 +333,51 @@ public class RRAutoBase2 extends LinearOpMode{
 
 
             // Drive to Sample3 Position
+
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose3.position, midwayPose3.heading)
+                            .build());
+
+            if(opModeIsActive()) {
+                mechOps.rotateClaw( robot.WRIST_FOLDED_IN);
+                robot.elbowMotor.setPower(1);
+                robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SPECIMEN_PICKUP);
+
+
+            }
+
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(yellowSample3Position.position, yellowSample3Position.heading)
                             .build());
+
+
             // Pick up Sample3
             if(opModeIsActive()) {
+                robot.elbowMotor.setPower(1);
+                robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
+                safeWaitSeconds(0.5);
                 mechOps.clawClose();
-                safeWaitSeconds(0.25);
-                // TODO: Add code to grab a sample from the floor
+                safeWaitSeconds(0.5);
+                robot.elbowMotor.setPower(1);
+                robot.elbowMotor.setTargetPosition((int) robot.ELBOW_TRAVERSE);
             }
+
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose3.position, midwayPose3.heading)
+                            .build());
+
 
             // Raise Arm to high basket scoring position
             // Raise Arm to high basket scoring position
             if(opModeIsActive()) {
+                mechOps.rotateClaw(robot.WRIST_FOLDED_OUT);
+
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
+
             }
 
             // Drive to scoring position
