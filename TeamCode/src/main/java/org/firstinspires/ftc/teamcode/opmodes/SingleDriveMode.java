@@ -22,6 +22,7 @@
 
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,7 +31,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
@@ -59,11 +59,43 @@ import java.util.Locale;
  *
  */
 
+    /**
+
+        CONTROLLER MAPPINGS:
+
+        == Joysticks: Driving ==
+        Left Stick: Drive/Strafe
+        Right Stick: Rotation
+
+        == Bumpers: Claw Manipulation ==
+        LB: Toggle Claw Rotation
+        RB: Toggle Claw Grabbing
+
+        == Face Buttons: Scoring Presets ==
+        Y / Triangle: High Bucket Scoring Position
+        X / Square: Low Bucket Scoring Position
+        B / Circle: Clear Barrier Position
+        A / Cross: Pickup Position
+
+        == DPAD: Hanging Presets & Extension Toggle ==
+        DPAD Up: Hang Ready Position
+        DPAD Down: Hang Execution Position
+        DPAD Left: Toggle Extension
+
+        == Triggers: Manual Manipulation ==
+        Left Trigger + Right Stick: Angle Up/Down
+        Right Trigger + Right Stick: Extension Forwards/Backwards
+
+        == Miscellaneous =
+        OPTIONS: Recalibrate IMU
+
+    **/
 
 /** @noinspection ALL*/
-@TeleOp(name="goBILDA Robot in 3 Days", group="Robot")
+@Disabled
+@TeleOp(name="SingleDrive", group="Robot")
 //@Disabled
-public class GoBildaRi3D2425 extends LinearOpMode {
+public class SingleDriveMode extends LinearOpMode {
 
     private final static HWProfile robot = new HWProfile();
 
@@ -97,8 +129,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         double poleToucherPosition = robot.POLE_DOWN;
 
 
-
-
         robot.init(hardwareMap, true);
 
         telemetry.addData("Status:", "Initialized");
@@ -123,6 +153,8 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         ElapsedTime armExtensionRuntime = new ElapsedTime();
         ElapsedTime armClimbRuntime = new ElapsedTime();
 
+        // Additional ElapsedTime objects for delays.
+        ElapsedTime clearExtension = new ElapsedTime();
 
 
         totalRuntime.reset();
@@ -141,6 +173,9 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         boolean clawOpened = false;
         boolean clawRotated = true;
         boolean armRetracted = true;
+
+        boolean highBasketDelay = false;
+        boolean pickupDelay = false;
         //boolean armClimb = false;
 
 
@@ -149,7 +184,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double rx = 0;
+
+            if (gamepad1.right_trigger < 0.05 && gamepad1.left_trigger < 0.05) {
+                rx  = gamepad1.right_stick_x;
+            }
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
@@ -161,7 +200,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             robot.pinpoint.update();    //update the IMU value
             Pose2D pos = robot.pinpoint.getPosition();
-            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.RADIANS));
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Position", data);
 
             //botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -188,33 +227,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             robot.elbowMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-            /* Here we handle the three buttons that have direct control of the intake speed.
-            These control the continuous rotation servo that pulls elements into the robot,
-            If the user presses A, it sets the intake power to the final variable that
-            holds the speed we want to collect at.
-            If the user presses X, it sets the servo to Off.
-            And if the user presses B it reveres the servo to spit out the element.*/
-
-            /* TECH TIP: If Else statement:
-            We're using an else if statement on "gamepad1.x" and "gamepad1.b" just in case
-            multiple buttons are pressed at the same time. If the driver presses both "a" and "x"
-            at the same time. "a" will win over and the intake will turn on. If we just had
-            three if statements, then it will set the intake servo's power to multiple speeds in
-            one cycle. Which can cause strange behavior. */
-
-            // a boolean to keep track of whether the claw is opened or closed.
-
-            if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
-                if (clawOpened) {
-                    robot.servoClaw.setPosition(robot.CLAW_CLOSED);
-                    clawOpened = false;
-                } else if (!clawOpened) {
-                    robot.servoClaw.setPosition(robot.CLAW_OPEN);
-                    clawOpened = true;
-                }
-                clawRuntime.reset();
-            }
             /* Here we create a "fudge factor" for the arm position.
             This allows you to adjust (or "fudge") the arm position slightly with the gamepad triggers.
             We want the left trigger to move the arm up, and right trigger to move the arm down.
@@ -225,87 +237,86 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             elbowPositionFudgeFactor = robot.FUDGE_FACTOR * (gamepad2.right_trigger + (-gamepad2.left_trigger));
 
-
-            /* Here we implement a set of if else statements to set our arm to different scoring positions.
-            We check to see if a specific button is pressed, and then move the arm (and sometimes
-            intake and wrist) to match. For example, if we click the right bumper we want the robot
-            to start collecting. So it moves the armPosition to the ARM_COLLECT position,
-            it folds out the wrist to make sure it is in the correct orientation to intake, and it
-            turns the intake on to the COLLECT mode.*/
-
+            // == FACE BUTTONS (ABXY) ==
             if (gamepad1.a) {
                 /* This is the intaking/collecting arm position */
-                elbowPosition = robot.ELBOW_TRAVERSE;
+                clearExtension.reset();
+                pickupDelay = true;
                 extensionPosition = robot.EXTENSION_COLLAPSED;
-                servoWristPosition = robot.WRIST_FOLDED_OUT;
-
             } else if (gamepad1.b) {
-                    /*This is about 20° up from the collecting position to clear the barrier
-                    Note here that we don't set the wrist position or the intake power when we
-                    select this "mode", this means that the intake and wrist will continue what
-                    they were doing before we clicked left bumper. */
-                elbowPosition = robot.ELBOW_CLEAR_BARRIER;
-
+                // Raises the arm up to clear the barrier.
+                elbowPosition = robot.ELBOW_TRAVERSE;
             } else if (gamepad1.x) {
-                /* This is the correct height to score the sample in the HIGH BASKET */
+                /* This is the correct height to score the sample in the LOW BASKET */
                 elbowPosition = robot.ELBOW_SCORE_SAMPLE_IN_LOW;
-                //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
+                extensionPosition = robot.EXTENSION_COLLAPSED;
+            } else if (gamepad1.y){
+                // Sets up the arm for scoring in the high basket.
+                clearExtension.reset();
+                highBasketDelay = true;
+                elbowPosition = robot.ELBOW_HIGH_BASKET;
+            }
+
+            // == FACE BUTTON EXTRAS ==
+            if (clearExtension.time() > 1.0 && highBasketDelay == true) {
+                // If Y is pressed and the arm is finally up, extend out to score.
+                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
+                highBasketDelay = false;
+            }
+            if (clearExtension.time() > 0.5 && pickupDelay == true) {
+                elbowPosition = robot.ELBOW_CLEAR_BARRIER;
+                pickupDelay = false;
+            }
 
 
-            } else if (gamepad1.dpad_right) {
-                    servoWristPosition = robot.WRIST_FOLDED_OUT;
-
-            } else if (gamepad1.dpad_up) {
-                    servoWristPosition = robot.WRIST_FOLDED_IN;
-
-                    //boolean toggle for extension in and out
-            } else if (gamepad1.left_bumper && armExtensionRuntime.time() > 0.25) {
+            // == DPAD ==
+            if (gamepad1.dpad_left && armExtensionRuntime.time() > 0.25) {
                 if (armRetracted) {
                     extensionPosition = robot.EXTENSION_COLLAPSED;
-                armRetracted = true;
-            } else if (!armRetracted) {
+                    armRetracted = true;
+                } else if (!armRetracted) {
                     extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
                     armRetracted = false;
-
                     armExtensionRuntime.reset();
-
                 }
                 //boolean toggle for arm climb
-
             } else if (gamepad2.dpad_up) {
-                    elbowPosition = robot.ELBOW_HANG_ATTACH;
+                elbowPosition = robot.ELBOW_HANG_ATTACH;
 
             } else if (gamepad2.dpad_down) {
                 elbowPosition = robot.ELBOW_HANG_CLIMB;
 
-            } else if (gamepad1.y){
-                elbowPosition = robot.ELBOW_EXTENSION_ANGLE;
             }
 
-            else if (gamepad2.y) {
-                extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
-                poleToucherPosition = robot.POLE_DOWN;
+
+            // ==TRIGGERS==
+            if (gamepad1.right_trigger > 0.05 && (elbowPosition + (20 * gamepad1.right_stick_y)) < robot.ELBOW_HIGH_BASKET && (elbowPosition + (20 * gamepad1.right_stick_y)) > robot.ELBOW_RESET){
+                elbowPosition += (0.5 * gamepad1.right_stick_y);
+            }
+            else if (gamepad1.left_trigger > 0.05 && (extensionPosition + (20 * gamepad1.right_stick_y)) > 0 && (extensionPosition + (20 * gamepad1.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+                extensionPosition += (20 * gamepad1.right_stick_y);
             }
 
-            else if (gamepad2.a) {
-                extensionPosition = 0;
-                poleToucherPosition = robot.POLE_UP;
-            }
-            else if (gamepad1.left_stick_button){
-                elbowPosition = robot.ELBOW_SPECIMEN_PICKUP;
-            }
-            else if (gamepad1.dpad_left){
-                elbowPosition = robot.ELBOW_SCORE_SPECIMEN;
-            }
-         else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.1) {
+
+            // ==BUMPERS==
+            if (gamepad1.left_bumper && rotateClawRuntime.time() > 0.1) {
                 if (clawRotated) {
                     servoWristPosition = robot.WRIST_FOLDED_OUT;
                     clawRotated = false;
                 } else if (!clawRotated) {
                     servoWristPosition = robot.WRIST_FOLDED_IN;
                     clawRotated = true;
-
                 }
+            }
+            if (gamepad1.right_bumper && clawRuntime.time() > 0.25) {
+                if (clawOpened) {
+                    robot.servoClaw.setPosition(robot.CLAW_CLOSED);
+                    clawOpened = false;
+                } else if (!clawOpened) {
+                    robot.servoClaw.setPosition(robot.CLAW_OPEN);
+                    clawOpened = true;
+                }
+                clawRuntime.reset();
             }
 
 
@@ -327,52 +338,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             if (elbowPosition < 45 * robot.ELBOW_TICKS_PER_DEGREE){
                 elbowLiftComp = (.25568 * extensionPosition); //0.25568
             }
-            else{
+            else {
                 elbowLiftComp = 0;
             }
 
-           /* Here we set the target position of our arm to match the variable that was selected
-            by the driver. We add the armPosition Variable to our armPositionFudgeFactor, before adding
-            our armLiftComp, which adjusts the arm height for different lift extensions.
-            We also set the target velocity (speed) the motor runs at, and use setMode to run it.*/
 
-            //robot.elbowMotor.setTargetPosition((int) (armPosition + armPositionFudgeFactor + armLiftComp));
-
-            //((DcMotorEx) robot.armMotor).setVelocity(2100);
-            //robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            /* Here we set the lift position based on the driver input.
-            This is a.... weird, way to set the position of a "closed loop" device. The lift is run
-            with encoders. So it knows exactly where it is, and there's a limit to how far in and
-            out it should run. Normally with mechanisms like this we just tell it to run to an exact
-            position. This works a lot like our arm. Where we click a button and it goes to a position, then stops.
-            But the drivers wanted more "open loop" controls. So we want the lift to keep extending for
-            as long as we hold the bumpers, and when we let go of the bumper, stop where it is at.
-            This allows the driver to manually set the position, and not have to have a bunch of different
-            options for how far out it goes. But it also lets us enforce the end stops for the slide
-            in software. So that the motor can't run past it's endstops and stall.
-            We have our liftPosition variable, which we increment or decrement for every cycle (every
-            time our main robot code runs) that we're holding the button. Now since every cycle can take
-            a different amount of time to complete, and we want the lift to move at a constant speed,
-            we measure how long each cycle takes with the cycletime variable. Then multiply the
-            speed we want the lift to run at (in mm/sec) by the cycletime variable. There's no way
-            that our lift can move 2800mm in one cycle, but since each cycle is only a fraction of a second,
-            we are only incrementing it a small amount each cycle.
-             */
-
-            // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            telemetry.addData("Extend Arm = ", "gamepad2.Right_Bumper");
-            telemetry.addData("Retract Arm = ", "gamepad2.Left_Bumper");
-            // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
-            if (gamepad2.right_bumper && (extensionPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
-                extensionPosition += 20;
-//                liftPosition += 2800 * cycletime;
-            }
-            else if (gamepad2.left_bumper && (extensionPosition - 20) > 0){
-                extensionPosition -= 20;
-//                liftPosition -= 2800 * cycletime;
-            }
 
             // Double check.
             // Checks again if liftPosition is beyond its boundries or not.
@@ -392,6 +362,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             robot.elbowMotor.setPower(1);
             robot.extendMotor.setPower(1);
+            robot.servoWrist.setPosition(servoWristPosition);
 
 
             /* Check to see if our arm is over the current limit, and report via telemetry. */
@@ -400,14 +371,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              * it didn't end up working... But here's the code we run it with. It just sets the motor
              * power to match the inverse of the left stick y.
              */
-
-            if(gamepad2.left_stick_y > 0){
-                elbowPosition =- .5;
-            } else if (gamepad2.left_stick_y < 0){
-                elbowPosition =+ .5;
-            }
-//            robot.hangMotor.setPower(-gamepad2.left_stick_y);
-                robot.servoWrist.setPosition(servoWristPosition);
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code
