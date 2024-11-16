@@ -157,12 +157,12 @@ public class RRAutoBase2 extends LinearOpMode{
         sampleScoringPosition = new Pose2d(4, 18, Math.toRadians(135));
         yellowSample1Position = new Pose2d(31, 7, Math.toRadians(0));
         yellowSample2Position = new Pose2d(31, 17, Math.toRadians(0));
-        yellowSample3Position = new Pose2d(37.5, 20, Math.toRadians(90));
+        yellowSample3Position = new Pose2d(37.5, 20.5, Math.toRadians(90));
         midwayPose1 = new Pose2d(10,13, Math.toRadians(90));
         midwayPose2 = new Pose2d(10,0, Math.toRadians(0));
         midwayPose3 = new Pose2d(30,0, Math.toRadians(90));
         parkPrepPose = new Pose2d(10, -90, Math.toRadians(-90));
-        parkPose = new Pose2d(0, 0, Math.toRadians(0));
+        parkPose = new Pose2d(0, 0, Math.toRadians(-45));
 
         /**
          * For Sample Scoring into high basket

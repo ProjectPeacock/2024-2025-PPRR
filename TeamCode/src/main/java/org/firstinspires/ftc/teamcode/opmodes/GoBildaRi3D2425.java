@@ -293,7 +293,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             else if (gamepad1.dpad_left){
                 elbowPosition = robot.ELBOW_SCORE_SPECIMEN;
             }
-         else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.15) {
+         else if (gamepad1.right_stick_button && rotateClawRuntime.time() > 0.1) {
                 if (clawRotated) {
                     servoWristPosition = robot.WRIST_FOLDED_OUT;
                     clawRotated = false;
