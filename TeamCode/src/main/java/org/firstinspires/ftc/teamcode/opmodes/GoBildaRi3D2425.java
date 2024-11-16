@@ -131,6 +131,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         // armExtensionRuntime.reset();
        // armClimbRuntime.reset();
 
+        double denominator = 0;
+        double frontLeftPower = 0;
+        double backLeftPower = 0;
+        double frontRightPower = 0;
+        double backRightPower = 0;
 
         // booleans for keeping track of toggles
         boolean clawOpened = false;
@@ -170,11 +175,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
+            denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            frontLeftPower = (rotY + rotX + rx) / denominator;
+            backLeftPower = (rotY - rotX + rx) / denominator;
+            frontRightPower = (rotY - rotX - rx) / denominator;
+            backRightPower = (rotY + rotX - rx) / denominator;
 
             robot.leftFrontDrive.setPower(frontLeftPower);
             robot.leftBackDrive.setPower(backLeftPower);
