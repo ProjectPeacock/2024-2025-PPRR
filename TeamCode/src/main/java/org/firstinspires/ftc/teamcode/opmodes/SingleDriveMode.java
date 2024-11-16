@@ -92,7 +92,6 @@ import java.util.Locale;
     **/
 
 /** @noinspection ALL*/
-@Disabled
 @TeleOp(name="SingleDrive", group="Robot")
 //@Disabled
 public class SingleDriveMode extends LinearOpMode {
