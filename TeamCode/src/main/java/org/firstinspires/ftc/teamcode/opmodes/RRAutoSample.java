@@ -43,8 +43,8 @@ import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.libraries.RRMechOps;
 
 //@Disabled
-@Autonomous(name = "Auto Samples - EXPERIMENTAL", group = "Competition", preselectTeleOp = "GoBildaRi3D2425")
-public class RRAutoBase2 extends LinearOpMode{
+@Autonomous(name = "Auto Samples - 4+0", group = "Competition", preselectTeleOp = "GoBildaRi3D2425")
+public class RRAutoSample extends LinearOpMode{
 
     public static String TEAM_NAME = "Project Peacock";
     public static int TEAM_NUMBER = 10355;
@@ -105,6 +105,8 @@ public class RRAutoBase2 extends LinearOpMode{
         Pose2d midwayPose1 = new Pose2d(0, 0, 0);
         Pose2d midwayPose2 = new Pose2d(0, 0, 0);
         Pose2d midwayPose3 = new Pose2d(0, 0, 0);
+        Pose2d midwayPose4 = new Pose2d(0,0,0);
+
 
         Pose2d parkPrepPose = new Pose2d(0, 0, 0);
         Pose2d parkPose = new Pose2d(0, 0, 0);
@@ -154,15 +156,16 @@ public class RRAutoBase2 extends LinearOpMode{
 
 
         drive = new MecanumDrive(hardwareMap, initPose);
-        sampleScoringPosition = new Pose2d(4, 18, Math.toRadians(135));
-        yellowSample1Position = new Pose2d(31, 7, Math.toRadians(0));
-        yellowSample2Position = new Pose2d(31, 17, Math.toRadians(0));
-        yellowSample3Position = new Pose2d(37.5, 20.5, Math.toRadians(90));
-        midwayPose1 = new Pose2d(10,13, Math.toRadians(90));
+        sampleScoringPosition = new Pose2d(1, 10, Math.toRadians(135));
+        yellowSample1Position = new Pose2d(31, 9, Math.toRadians(-60));
+        yellowSample2Position = new Pose2d(34, 18, Math.toRadians(-60));
+        yellowSample3Position = new Pose2d(39.5, 23, Math.toRadians(90));
+        midwayPose1 = new Pose2d(10,16, Math.toRadians(90));
         midwayPose2 = new Pose2d(10,0, Math.toRadians(0));
         midwayPose3 = new Pose2d(30,0, Math.toRadians(90));
+        midwayPose4 = new Pose2d(37,15, Math.toRadians(90));
         parkPrepPose = new Pose2d(10, -90, Math.toRadians(-90));
-        parkPose = new Pose2d(0, 0, Math.toRadians(-45));
+        parkPose = new Pose2d(1, -73, Math.toRadians(-45));
 
         /**
          * For Sample Scoring into high basket
@@ -206,6 +209,8 @@ public class RRAutoBase2 extends LinearOpMode{
 
             if(opModeIsActive()) {
                 mechOps.extendArm((int) robot.EXTENSION_COLLAPSED);
+
+                robot.elbowMotor.setTargetPosition(robot.ELBOW_TRAVERSE);
             }
 
             // Drive to pick up Sample1 Position
@@ -218,7 +223,7 @@ public class RRAutoBase2 extends LinearOpMode{
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
 //                mechOps.resetArm();
-                safeWaitSeconds(0.85);
+               // safeWaitSeconds(0.85);
                 mechOps.clawClose();
                 safeWaitSeconds(0.5);
                 robot.elbowMotor.setPower(1);
@@ -266,6 +271,8 @@ public class RRAutoBase2 extends LinearOpMode{
 
             if(opModeIsActive()) {
                 mechOps.extendArm((int) robot.EXTENSION_COLLAPSED);
+                safeWaitSeconds(.25);
+                robot.elbowMotor.setTargetPosition(robot.ELBOW_TRAVERSE);
             }
 
              //Drive to pickup Sample2 Position
@@ -280,7 +287,7 @@ public class RRAutoBase2 extends LinearOpMode{
             if(opModeIsActive()) {
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
-                safeWaitSeconds(0.85);
+                //safeWaitSeconds(0.1);
                 mechOps.clawClose();
                 safeWaitSeconds(0.3);
                 robot.elbowMotor.setPower(1);
@@ -327,7 +334,6 @@ public class RRAutoBase2 extends LinearOpMode{
 
             if(opModeIsActive()) {
                 mechOps.extendArm((int) robot.EXTENSION_COLLAPSED);
-                mechOps.resetArm();
             }
 
 
@@ -359,7 +365,18 @@ public class RRAutoBase2 extends LinearOpMode{
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
                 safeWaitSeconds(0.5);
                 mechOps.clawClose();
-                safeWaitSeconds(0.5);
+            }
+
+            Actions.runBlocking(
+                    drive.actionBuilder(drive.pose)
+                            .strafeToLinearHeading(midwayPose4.position, midwayPose4.heading)
+                            .build());
+
+
+            // Raise Arm to high basket scoring position
+            // Raise Arm to high basket scoring position
+            if(opModeIsActive()) {
+                mechOps.rotateClaw(robot.WRIST_FOLDED_OUT);
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_TRAVERSE);
             }
@@ -369,12 +386,7 @@ public class RRAutoBase2 extends LinearOpMode{
                             .strafeToLinearHeading(midwayPose3.position, midwayPose3.heading)
                             .build());
 
-
-            // Raise Arm to high basket scoring position
-            // Raise Arm to high basket scoring position
-            if(opModeIsActive()) {
-                mechOps.rotateClaw(robot.WRIST_FOLDED_OUT);
-
+            if(opModeIsActive()){
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
 
@@ -411,7 +423,7 @@ public class RRAutoBase2 extends LinearOpMode{
             // Lower the arm
             if(opModeIsActive()) {
                 mechOps.clawOpen();
-                safeWaitSeconds(0.5);
+                safeWaitSeconds(0.25);
                 // TODO: Add code to release the sample and lower the arm
             }
 
@@ -423,29 +435,20 @@ public class RRAutoBase2 extends LinearOpMode{
 
 
             if(opModeIsActive()) {
+                safeWaitSeconds(.25);
                 mechOps.extendArm((int) robot.EXTENSION_COLLAPSED);
                 mechOps.resetArm();
             }
 
 
             // Park
-            if(opModeIsActive()) {
-                mechOps.resetArm();
-                // TODO: Add code to park
-            }
 
             Actions.runBlocking(
                     drive.actionBuilder(drive.pose)
-                            .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
                             .strafeToLinearHeading(parkPose.position, parkPose.heading)
                             .build());
 
         }
-
-            if(opModeIsActive()){
-                mechOps.poleTouch();
-            }
-
         //end of if (startPosition == BLUE_SAMPLES || RED_SAMPLES)
 
         /**

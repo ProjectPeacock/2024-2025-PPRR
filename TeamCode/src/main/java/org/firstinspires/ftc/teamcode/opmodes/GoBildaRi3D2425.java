@@ -284,12 +284,10 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             else if (gamepad2.y) {
                 extensionPosition = robot.EXTENSION_SCORING_IN_HIGH_BASKET;
-                poleToucherPosition = robot.POLE_DOWN;
             }
 
             else if (gamepad2.a) {
                 extensionPosition = 0;
-                poleToucherPosition = robot.POLE_UP;
             }
             else if (gamepad1.left_stick_button){
                 elbowPosition = robot.ELBOW_SPECIMEN_PICKUP;

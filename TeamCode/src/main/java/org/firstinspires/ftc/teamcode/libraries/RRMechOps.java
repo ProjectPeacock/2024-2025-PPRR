@@ -44,6 +44,10 @@ public class RRMechOps {
         robot.servoWrist.setPosition(targetClawPosition);
     }
 
+    public void specimenScoring(){
+        robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SPECIMEN);
+    }
+
     public void clawClose(){
         robot.servoClaw.setPosition(robot.CLAW_CLOSED);    // TODO: create target position constant
     }
@@ -79,7 +83,7 @@ public class RRMechOps {
         robot.extendMotor.setPower(1);
         robot.extendMotor.setTargetPosition((int) robot.EXTENSION_COLLAPSED);
 
-        robot.elbowMotor.setPower(0.5);
+        robot.elbowMotor.setPower(1);
         robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
 
         // set claw to reset position

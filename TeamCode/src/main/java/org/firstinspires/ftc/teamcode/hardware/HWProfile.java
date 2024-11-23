@@ -67,8 +67,8 @@ public class HWProfile {
 //    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
     public final int    ELBOW_TRAVERSE             = 600;
     public final double    ELBOW_HIGH_BASKET       = 100 * ELBOW_TICKS_PER_DEGREE;
-    public final double ELBOW_SPECIMEN_PICKUP      = 14 * ELBOW_TICKS_PER_DEGREE;
-    public final double ELBOW_SCORE_SPECIMEN       = 50  * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SPECIMEN_PICKUP      = 18 * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SCORE_SPECIMEN       = 75  * ELBOW_TICKS_PER_DEGREE;
 
 
 
