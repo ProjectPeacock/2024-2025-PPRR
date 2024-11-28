@@ -440,8 +440,8 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 gamepad1.setLedColor(255,0,0,50);
                 gamepad2.setLedColor(255,0,0,50);
             } else if(totalRuntime.time() > 93) {
-                gamepad1.setLedColor(255, 0, 0, 30000);
-                gamepad2.setLedColor(255, 0, 0, 30000);
+                gamepad1.setLedColor(255, 255, 255, 30000);
+                gamepad2.setLedColor(255, 255, 255, 30000);
 
             }
 

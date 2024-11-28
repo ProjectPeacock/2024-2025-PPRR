@@ -52,10 +52,13 @@ public class RRMechOps {
         robot.servoClaw.setPosition(robot.CLAW_CLOSED);    // TODO: create target position constant
     }
 
+    public void clawPartial(){
+        robot.servoClaw.setPosition(robot.CLAW_PARTIAL_OPEN);
+    }
     public void scoreHighBasket(){
         // set arm position to up
         robot.elbowMotor.setPower(1);
-        robot.elbowMotor.setTargetPosition((int) robot.ELBOW_HIGH_BASKET);
+        robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
 
 
         // extend arm to full reach
