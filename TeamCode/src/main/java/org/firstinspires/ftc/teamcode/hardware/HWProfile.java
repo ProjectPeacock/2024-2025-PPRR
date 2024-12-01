@@ -80,7 +80,7 @@ public class HWProfile {
     /* A number in degrees that the triggers can adjust the arm position by */
     public final double FUDGE_FACTOR = 45 * ELBOW_TICKS_PER_DEGREE;
 
-    public final double CLAW_OPEN = 0;
+    public final double CLAW_OPEN = .25;
     public final double CLAW_CLOSED = 1;
     public final double CLAW_PARTIAL_OPEN = .6;
 
@@ -89,7 +89,7 @@ public class HWProfile {
     public final double EXTENSION_COLLAPSED = 0 * EXTENSION_TICKS_PER_MM;
     public final double EXTENSION_SCORING_IN_LOW_BASKET = 0 * EXTENSION_TICKS_PER_MM;
     public final double EXTENSION_SCORING_IN_HIGH_BASKET = 490 * EXTENSION_TICKS_PER_MM;
-    public final int    EXTENSION_DOWN_MAX         = 1200;
+    public final int    EXTENSION_DOWN_MAX         = 1300;
 
 
     public final double POLE_DOWN = 0;

@@ -94,7 +94,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
         double rotate;
         double max;
         double servoWristPosition = robot.WRIST_FOLDED_OUT;
-        double poleToucherPosition = robot.POLE_DOWN;
 
 
 
@@ -272,11 +271,6 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 }
                 //boolean toggle for arm climb
 
-            } else if (gamepad2.dpad_up) {
-                    elbowPosition = robot.ELBOW_HANG_ATTACH;
-
-            } else if (gamepad2.dpad_down) {
-                elbowPosition = robot.ELBOW_HANG_CLIMB;
 
             } else if (gamepad1.y){
                 elbowPosition = robot.ELBOW_EXTENSION_ANGLE;
@@ -365,11 +359,11 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             telemetry.addData("Retract Arm = ", "gamepad2.Left_Bumper");
             // If the button is pressed and liftPosition is not surpassing the range it should be in, then liftPosition is changed accordingly.
             if (gamepad2.right_bumper && (extensionPosition + 20) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
-                extensionPosition += 20;
+                extensionPosition += 15;
 //                liftPosition += 2800 * cycletime;
             }
             else if (gamepad2.left_bumper && (extensionPosition - 20) > 0){
-                extensionPosition -= 20;
+                extensionPosition -= 15;
 //                liftPosition -= 2800 * cycletime;
             }
 
@@ -400,13 +394,25 @@ public class GoBildaRi3D2425 extends LinearOpMode {
              * power to match the inverse of the left stick y.
              */
 
-            if(gamepad2.left_stick_y > 0){
-                elbowPosition =- .5;
-            } else if (gamepad2.left_stick_y < 0){
-                elbowPosition =+ .5;
-            }
 //            robot.hangMotor.setPower(-gamepad2.left_stick_y);
                 robot.servoWrist.setPosition(servoWristPosition);
+
+
+            if (gamepad2.right_trigger > 0.05 && (elbowPosition + (20 * gamepad2.right_stick_y)) < robot.ELBOW_HIGH_BASKET && (elbowPosition + (20 * gamepad2.right_stick_y)) > robot.ELBOW_RESET){
+                elbowPosition -= (20 * gamepad2.right_stick_y);
+            }
+            else if (gamepad2.dpad_up) {
+                elbowPosition = robot.ELBOW_HANG_ATTACH;
+            }
+
+
+            if (gamepad2.left_trigger > 0.05 && (extensionPosition + (20 * gamepad2.right_stick_y)) > 0 && (extensionPosition + (20 * gamepad2.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+                extensionPosition += (40 * gamepad2.right_stick_y);
+            }
+            else if (gamepad2.dpad_down) {
+                elbowPosition = robot.ELBOW_HANG_CLIMB;
+            }
+
 
             /* This is how we check our loop time. We create three variables:
             looptime is the current time when we hit this part of the code
