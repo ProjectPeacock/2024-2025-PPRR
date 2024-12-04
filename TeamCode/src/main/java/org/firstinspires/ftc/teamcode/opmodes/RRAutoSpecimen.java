@@ -161,8 +161,9 @@ public class RRAutoSpecimen extends LinearOpMode{
                             .strafeToLinearHeading(midwayPose4.position, midwayPose4.heading)
                             .strafeToLinearHeading(coloredSample1Position.position, coloredSample1Position.heading)
                             .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
-                            .strafeToLinearHeading(midwayPose2.position, midwayPose2.heading)
-                            .strafeToLinearHeading(grabSpecimenPosition.position, grabSpecimenPosition.heading)
+                            .strafeToLinearHeading(midwayPose4.position, midwayPose4.heading)
+                            .strafeToLinearHeading(coloredSample2Position.position, coloredSample2Position.heading)
+                            .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                             .build());
 
 
