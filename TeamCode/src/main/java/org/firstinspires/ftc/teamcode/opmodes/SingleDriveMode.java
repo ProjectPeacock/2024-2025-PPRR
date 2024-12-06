@@ -293,7 +293,7 @@ public class SingleDriveMode extends LinearOpMode {
                 elbowPosition += (10 * gamepad1.right_stick_y);
             }
             else if (gamepad1.left_trigger > 0.05 && (extensionPosition + (20 * gamepad1.right_stick_y)) > 0 && (extensionPosition + (20 * gamepad1.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
-                extensionPosition += (20 * gamepad1.right_stick_y);
+                extensionPosition += (20 * -gamepad1.right_stick_y);
             }
 
 

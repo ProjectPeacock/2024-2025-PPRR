@@ -398,16 +398,17 @@ public class GoBildaRi3D2425 extends LinearOpMode {
                 robot.servoWrist.setPosition(servoWristPosition);
 
 
-            if (gamepad2.right_trigger > 0.05 && (elbowPosition + (20 * gamepad2.right_stick_y)) < robot.ELBOW_HIGH_BASKET && (elbowPosition + (20 * gamepad2.right_stick_y)) > robot.ELBOW_RESET){
-                elbowPosition -= (20 * gamepad2.right_stick_y);
+            // The values for the right stick are flipped because, for whatever reason, up is negative and down is positive on the gray dualshock controller.
+            if (gamepad2.right_trigger > 0.05 && (elbowPosition + (20 * -gamepad2.right_stick_y)) < robot.ELBOW_HIGH_BASKET && (elbowPosition + (20 * -gamepad2.right_stick_y)) > robot.ELBOW_RESET){
+                elbowPosition += (20 * -gamepad2.right_stick_y);
             }
             else if (gamepad2.dpad_up) {
                 elbowPosition = robot.ELBOW_HANG_ATTACH;
             }
 
 
-            if (gamepad2.left_trigger > 0.05 && (extensionPosition + (20 * gamepad2.right_stick_y)) > 0 && (extensionPosition + (20 * gamepad2.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
-                extensionPosition += (40 * gamepad2.right_stick_y);
+            if (gamepad2.left_trigger > 0.05 && (extensionPosition + (40 * -gamepad2.right_stick_y)) > 0 && (extensionPosition + (40 * -gamepad2.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+                extensionPosition += (40 * -gamepad2.right_stick_y);
             }
             else if (gamepad2.dpad_down) {
                 elbowPosition = robot.ELBOW_HANG_CLIMB;
@@ -454,6 +455,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             /* send telemetry to the driver of the arm's current position and target position */
             //telemetry.addData("arm Target Position: ", robot.armMotor.getTargetPosition());
             //telemetry.addData("arm Encoder: ", robot.armMotor.getCurrentPosition());
+            telemetry.addData("rightStick: ", -gamepad2.right_stick_y);
             telemetry.addData("lift variable", extensionPosition);
             telemetry.addData("Lift Target Position",robot.extendMotor.getTargetPosition());
             telemetry.addData("lift current position", robot.extendMotor.getCurrentPosition());
