@@ -407,7 +407,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
             }
 
 
-            if (gamepad2.left_trigger > 0.05 && (extensionPosition + (40 * -gamepad2.right_stick_y)) > 0 && (extensionPosition + (40 * -gamepad2.right_stick_y)) < robot.EXTENSION_SCORING_IN_HIGH_BASKET){
+            if (gamepad2.left_trigger > 0.05 && (extensionPosition + (40 * -gamepad2.right_stick_y)) > 0 && (extensionPosition + (40 * -gamepad2.right_stick_y)) < robot.EXTENSION_DOWN_MAX){
                 extensionPosition += (40 * -gamepad2.right_stick_y);
             }
             else if (gamepad2.dpad_down) {
