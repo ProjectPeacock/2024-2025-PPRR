@@ -59,9 +59,6 @@ public class RRMechOps {
         // set arm position to up
         robot.elbowMotor.setPower(1);
         robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
-
-
-        // extend arm to full reach
         extendArm((int) robot.EXTENSION_SCORING_IN_HIGH_BASKET);
         //robot.armMotor.setPosition(params);
 

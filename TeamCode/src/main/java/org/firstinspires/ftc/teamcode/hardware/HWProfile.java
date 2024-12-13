@@ -59,7 +59,7 @@ public class HWProfile {
     public final int    ELBOW_RESET                = 10;
     public final double ELBOW_HANG_ATTACH          = 135 * ELBOW_TICKS_PER_DEGREE;
     public final double ELBOW_COLLAPSED_INTO_ROBOT = 100;
-    public final double ELBOW_SCORE_SAMPLE_IN_LOW = 108 * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_SCORE_SAMPLE_IN_LOW = 105 * ELBOW_TICKS_PER_DEGREE;
     public final int    ELBOW_CLEAR_BARRIER        = 200;
 //    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
     //public final int    ELBOW_SCORE_SPECIMEN       = 300;
@@ -75,7 +75,7 @@ public class HWProfile {
     /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
     public final double WRIST_FOLDED_IN   = 0.1667;
     public final double WRIST_FOLDED_OUT  = 0.5;
-    public final double WRIST_FOLDED_PARTIAL = .45;
+    public final double WRIST_FOLDED_PARTIAL = .25;
 
     /* A number in degrees that the triggers can adjust the arm position by */
     public final double FUDGE_FACTOR = 45 * ELBOW_TICKS_PER_DEGREE;

@@ -340,10 +340,8 @@ public class RRAutoSpecimen extends LinearOpMode{
                             TEAM_NAME, " ", TEAM_NUMBER);
                     telemetry.addData("---------------------------------------","");
                     telemetry.addData("Select Starting Position using XYAB on Logitech (or ▢ΔOX on Playstayion) on gamepad 1:","");
-                    telemetry.addData("    Blue Yellow Samples   ", "(X / ▢)");
-                    telemetry.addData("    Blue Specimens ", "(Y / Δ)");
-                    telemetry.addData("    Red Yellow Samples    ", "(B / O)");
-                    telemetry.addData("    Red Specimens  ", "(A / X)");
+                    telemetry.addData("    Blue Specimens ", "(DPAD RIGHT)");
+                    telemetry.addData("    Red Specimens  ", "(DPAD LEFT)");
 
                     if(gamepad1.dpad_left){
                         startPosition = START_POSITION.BLUE_SPECIMENS;
