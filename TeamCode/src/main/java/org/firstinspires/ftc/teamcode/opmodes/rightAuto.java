@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.teamcode.hardware.HWProfile;
 import org.firstinspires.ftc.teamcode.libraries.RobotLibrary;
 
-@Autonomous(name = "rightAuto", group = "Robot")
+@Autonomous(name = "rightAutoPARKONLY", group = "Robot")
 //@Disabled
 
 public class rightAuto extends LinearOpMode {

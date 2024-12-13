@@ -91,17 +91,16 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
         sampleScoringPosition = new Pose2d(2, 46, Math.toRadians(135));
         yellowSample1Position = new Pose2d(32, 33, Math.toRadians(0));
         yellowSample2Position = new Pose2d(33, 42, Math.toRadians(-35));
-        yellowSample3Position = new Pose2d(39, 24.5, Math.toRadians(90)); // approximate. Will need to dail in later...
+        yellowSample3Position = new Pose2d(39, 24.5, Math.toRadians(90));
         midwayPose1 = new Pose2d(15,33, Math.toRadians(135)); // This will be the position right before scoring on high basket
         midwayPose2 = new Pose2d(15,34, Math.toRadians(135)); // position we go to after scoring
         midwayPose3 = new Pose2d(27, 17, Math.toRadians(90)); // prep for sample #3
         midwayPose4 = new Pose2d(1,24, Math.toRadians(0)); // position we go right after scoring specimen
-        midwayPose5 = new Pose2d(16,32, Math.toRadians(0));
-        parkPrepPose = new Pose2d(10, -90, Math.toRadians(-90));
-        parkPose = new Pose2d(2.5, -50, Math.toRadians(0));
+        midwayPose5 = new Pose2d(16,32, Math.toRadians(0)); // prep before grabbing sample 2
+        parkPose = new Pose2d(2.5, -45, Math.toRadians(0));
 
         /**
-         * For Sample Scoring into high basket
+         * For Specimen Preload Scoring and then 3 Samples
          **/
         if (startPosition == RRAutoSample.START_POSITION.BLUE_SAMPLES ||
                 startPosition == RRAutoSample.START_POSITION.RED_SAMPLES) {
