@@ -247,7 +247,7 @@ public class GoBildaRi3D2425 extends LinearOpMode {
 
             } else if (gamepad1.x) {
                 /* This is the correct height to score the sample in the HIGH BASKET */
-                elbowPosition = robot.ELBOW_SCORE_SAMPLE_IN_LOW;
+                elbowPosition = robot.ELBOW_HIGH_BASKET;
                 //liftPosition = LIFT_SCORING_IN_HIGH_BASKET;
 
 

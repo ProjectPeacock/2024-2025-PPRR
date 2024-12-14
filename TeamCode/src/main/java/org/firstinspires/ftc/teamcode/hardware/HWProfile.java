@@ -61,14 +61,12 @@ public class HWProfile {
     public final double ELBOW_COLLAPSED_INTO_ROBOT = 100;
     public final double ELBOW_SCORE_SAMPLE_IN_LOW = 105 * ELBOW_TICKS_PER_DEGREE;
     public final int    ELBOW_CLEAR_BARRIER        = 200;
-//    public final double ARM_CLEAR_BARRIER         = 15 * ARM_TICKS_PER_DEGREE;
-    //public final int    ELBOW_SCORE_SPECIMEN       = 300;
     public final double ELBOW_EXTENSION_ANGLE      = 400;
-//    public final double ARM_SCORE_SPECIMEN        = 90 * ARM_TICKS_PER_DEGREE;
     public final int    ELBOW_TRAVERSE             = 600;
-    public final double    ELBOW_HIGH_BASKET       = 100 * ELBOW_TICKS_PER_DEGREE;
+    public final double    ELBOW_HIGH_BASKET       = 110 * ELBOW_TICKS_PER_DEGREE;
     public final double ELBOW_SPECIMEN_PICKUP      = 18 * ELBOW_TICKS_PER_DEGREE;
     public final double ELBOW_SCORE_SPECIMEN       = 75  * ELBOW_TICKS_PER_DEGREE;
+    public final double ELBOW_ANGLE_AUTON          = 450;
 
 
 

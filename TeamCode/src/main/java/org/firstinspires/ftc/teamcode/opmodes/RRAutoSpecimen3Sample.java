@@ -90,14 +90,14 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
         specimenScoringPosition = new Pose2d(35,-13, Math.toRadians(0));
         sampleScoringPosition = new Pose2d(2, 46, Math.toRadians(135));
         yellowSample1Position = new Pose2d(32, 33, Math.toRadians(0));
-        yellowSample2Position = new Pose2d(33, 42, Math.toRadians(-35));
-        yellowSample3Position = new Pose2d(39, 24.5, Math.toRadians(90));
+        yellowSample2Position = new Pose2d(33, 43, Math.toRadians(-30));
+        yellowSample3Position = new Pose2d(42, 27, Math.toRadians(90));
         midwayPose1 = new Pose2d(15,33, Math.toRadians(135)); // This will be the position right before scoring on high basket
         midwayPose2 = new Pose2d(15,34, Math.toRadians(135)); // position we go to after scoring
         midwayPose3 = new Pose2d(27, 17, Math.toRadians(90)); // prep for sample #3
         midwayPose4 = new Pose2d(1,24, Math.toRadians(0)); // position we go right after scoring specimen
         midwayPose5 = new Pose2d(16,32, Math.toRadians(0)); // prep before grabbing sample 2
-        parkPose = new Pose2d(2.5, -45, Math.toRadians(0));
+        parkPose = new Pose2d(2.5, -40, Math.toRadians(0));
 
         /**
          * For Specimen Preload Scoring and then 3 Samples
@@ -136,11 +136,11 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
 
             //grab Sample1 and move arm up
             if(opModeIsActive()){
-                robot.elbowMotor.setPower(.75);
+                robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition(robot.ELBOW_RESET);
-                safeWaitSeconds(.5);
+                safeWaitSeconds(.6);
                 mechOps.clawClose();
-                safeWaitSeconds(.4);
+                safeWaitSeconds(.2);
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
             }
@@ -155,7 +155,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             //extend up to score
             if (opModeIsActive()){
                 mechOps.scoreHighBasket();
-                safeWaitSeconds(.7);
+                safeWaitSeconds(.5);
             }
 
 
@@ -168,7 +168,6 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             // Release the sample into the basket
             if(opModeIsActive()) {
                 mechOps.clawOpen();
-                safeWaitSeconds(.25);
             }
 
             // Drive to prep position
@@ -192,16 +191,16 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
                             .strafeToLinearHeading(yellowSample2Position.position, yellowSample2Position.heading)
                             .build());
 
+
             // Pick up Sample2
             if(opModeIsActive()) {
-                robot.elbowMotor.setPower(.75);
+                robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_RESET);
-                safeWaitSeconds(.75);
+                safeWaitSeconds(.6);
                 mechOps.clawClose();
-                safeWaitSeconds(0.35);
+                safeWaitSeconds(0.3);
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_SCORE_SAMPLE_IN_LOW);
-                // TODO: Add code to grab a sample from the floor
             }
 
 
@@ -210,6 +209,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
                     drive.actionBuilder(drive.pose)
                             .strafeToLinearHeading(midwayPose1.position, midwayPose1.heading)
                             .build());
+
 
             // Raise arm to high basket scoring position
             if(opModeIsActive()) {
@@ -226,7 +226,6 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             // Release sample2 into the basket
             if(opModeIsActive()) {
                 mechOps.clawOpen();
-                safeWaitSeconds(.25);
             }
 
             // Drive to prep position
@@ -252,7 +251,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
                 mechOps.rotateClaw( robot.WRIST_FOLDED_PARTIAL);
                 robot.elbowMotor.setPower(1);
                 robot.extendMotor.setPower(1);
-                robot.elbowMotor.setTargetPosition((int) robot.ELBOW_EXTENSION_ANGLE);
+                robot.elbowMotor.setTargetPosition((int) robot.ELBOW_ANGLE_AUTON);
                 robot.extendMotor.setTargetPosition(robot.EXTENSION_DOWN_MAX);
                 mechOps.clawOpen();
             }
@@ -270,8 +269,8 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
                 robot.elbowMotor.setTargetPosition((int) robot.ELBOW_CLEAR_BARRIER);
                 safeWaitSeconds(.5);
                 mechOps.clawClose();
-                safeWaitSeconds(.5);
-                robot.extendMotor.setPower(.75);
+                safeWaitSeconds(.25);
+                robot.extendMotor.setPower(1);
                 robot.extendMotor.setTargetPosition((int)robot.EXTENSION_COLLAPSED);
                 robot.elbowMotor.setTargetPosition(robot.ELBOW_TRAVERSE);
             }
@@ -294,10 +293,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             if(opModeIsActive()) {
                 mechOps.scoreHighBasket();
                 safeWaitSeconds(.5);
-
             }
-
-
 
             //move in to score
             Actions.runBlocking(
