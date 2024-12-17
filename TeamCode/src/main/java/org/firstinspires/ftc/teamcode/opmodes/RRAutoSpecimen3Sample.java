@@ -138,7 +138,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             if(opModeIsActive()){
                 robot.elbowMotor.setPower(1);
                 robot.elbowMotor.setTargetPosition(robot.ELBOW_RESET);
-                safeWaitSeconds(.6);
+                safeWaitSeconds(.75);
                 mechOps.clawClose();
                 safeWaitSeconds(.2);
                 robot.elbowMotor.setPower(1);
@@ -168,6 +168,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             // Release the sample into the basket
             if(opModeIsActive()) {
                 mechOps.clawOpen();
+                safeWaitSeconds(.15);
             }
 
             // Drive to prep position
@@ -226,6 +227,7 @@ public class RRAutoSpecimen3Sample extends LinearOpMode{
             // Release sample2 into the basket
             if(opModeIsActive()) {
                 mechOps.clawOpen();
+                safeWaitSeconds(.15);
             }
 
             // Drive to prep position

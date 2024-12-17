@@ -116,9 +116,9 @@ public class RRAutoSample extends LinearOpMode{
 
         drive = new MecanumDrive(hardwareMap, initPose);
         sampleScoringPosition = new Pose2d(2, 21, Math.toRadians(135));
-        yellowSample1Position = new Pose2d(30.75, 9, Math.toRadians(-75));
+        yellowSample1Position = new Pose2d(31, 9, Math.toRadians(-80));
         yellowSample2Position = new Pose2d(32, 20, Math.toRadians(-80));
-        yellowSample3Position = new Pose2d(38.3, 3.5, Math.toRadians(90));
+        yellowSample3Position = new Pose2d(38.75, 3.5, Math.toRadians(90));
         midwayPose1 = new Pose2d(10,5, Math.toRadians(90));
         midwayPose2 = new Pose2d(10,0, Math.toRadians(0));
         midwayPose3 = new Pose2d(30,0, Math.toRadians(90));
