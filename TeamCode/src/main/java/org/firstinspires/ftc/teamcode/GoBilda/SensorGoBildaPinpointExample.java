@@ -60,11 +60,11 @@ For support, contact tech@gobilda.com
  */
 
 @TeleOp(name="goBILDA® PinPoint Odometry Example", group="Linear OpMode")
-@Disabled
+//@Disabled
 
 public class SensorGoBildaPinpointExample extends LinearOpMode {
 
-GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
+GoBildaPinpointDriverRR odo; // Declare OpMode member for the Odometry Computer
 
     double oldTime = 0;
 
@@ -93,7 +93,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         If you're using another kind of odometry pod, uncomment setEncoderResolution and input the
         number of ticks per mm of your odometry pod.
          */
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderResolution(GoBildaPinpointDriverRR.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         //odo.setEncoderResolution(13.26291192);
 
 
@@ -102,7 +102,7 @@ GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
         increase when you move the robot forward. And the Y (strafe) pod should increase when
         you move the robot to the left.
          */
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriverRR.EncoderDirection.FORWARD, GoBildaPinpointDriverRR.EncoderDirection.FORWARD);
 
 
         /*
