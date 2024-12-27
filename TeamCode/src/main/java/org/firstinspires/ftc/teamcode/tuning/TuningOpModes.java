@@ -22,13 +22,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
-import org.firstinspires.ftc.teamcode.GoBilda.GoBildaPinpointDriverRR;
-import org.firstinspires.ftc.teamcode.GoBilda.SensorGoBildaPinpointExample;
 import org.firstinspires.ftc.teamcode.TankDrive;
 import org.firstinspires.ftc.teamcode.ThreeDeadWheelLocalizer;
-import org.firstinspires.ftc.teamcode.tuning.PinpointDrive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +33,8 @@ import java.util.List;
 @Disabled
 
 public final class TuningOpModes {
-    public static final Class<?> DRIVE_CLASS = PinpointDrive.class;
+//    public static final Class<?> DRIVE_CLASS = SparkFunOTOSDrive.class; // TODO: change to your drive class i.e. PinpointDrive if using pinpoint
+    public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
     public static final String GROUP = "quickstart";
     public static final boolean DISABLED = false;
@@ -57,43 +54,8 @@ public final class TuningOpModes {
         if (DISABLED) return;
 
         DriveViewFactory dvf;
-        if (DRIVE_CLASS.equals(PinpointDrive.class)) {
-            dvf = hardwareMap -> {
-                PinpointDrive pd = new PinpointDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-                List<Encoder> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
-                List<Encoder> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                parEncs.add(new PinpointEncoder(pd.pinpoint,false, pd.leftBack));
-                perpEncs.add(new PinpointEncoder(pd.pinpoint,true, pd.leftBack));
-
-                return new DriveView(
-                        DriveType.MECANUM,
-                        MecanumDrive.PARAMS.inPerTick,
-                        MecanumDrive.PARAMS.maxWheelVel,
-                        MecanumDrive.PARAMS.minProfileAccel,
-                        MecanumDrive.PARAMS.maxProfileAccel,
-                        hardwareMap.getAll(LynxModule.class),
-                        Arrays.asList(
-                                pd.leftFront,
-                                pd.leftBack
-                        ),
-                        Arrays.asList(
-                                pd.rightFront,
-                                pd.rightBack
-                        ),
-                        leftEncs,
-                        rightEncs,
-                        parEncs,
-                        perpEncs,
-                        pd.lazyImu,
-                        pd.voltageSensor,
-                        () -> new MotorFeedforward(MecanumDrive.PARAMS.kS,
-                                MecanumDrive.PARAMS.kV / MecanumDrive.PARAMS.inPerTick,
-                                MecanumDrive.PARAMS.kA / MecanumDrive.PARAMS.inPerTick)
-                );
-            };
-
-        } else if (DRIVE_CLASS.equals(MecanumDrive.class)) {
+        if (DRIVE_CLASS.equals(MecanumDrive.class)) {
             dvf = hardwareMap -> {
                 MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
